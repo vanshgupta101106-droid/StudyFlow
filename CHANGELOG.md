@@ -21,7 +21,10 @@ All progress after Milestone 1. Dates are YYYY-MM-DD.
 - Test pass criteria now include the test-specific expectations (hour ordering by difficulty, expected warnings), so a pass means the Expected column was met.
 - Report restructured to the 7 required sections and headings; module table uses the Working / Partly working / Not started statuses.
 
-## [FILL date]
-- Ran `run_experiments.py` with gemini-3.6-flash: [FILL x/12 passed]. Saved outputs in `test-data/outputs/`.
-- Deployed to Streamlit Community Cloud: [FILL link].
-- [FILL any prompt or code changes made after seeing the test results]
+## 2026-11-22
+- Switched the model to `gemini-3.6-flash`: `gemini-2.5-flash` is no longer available to new API keys, and 3.7/3.8 returned "high demand" (503) errors. Diagrams re-rendered with the new model name.
+- Ran `run_experiments.py` with gemini-3.6-flash: **12/12 tests passed** (8 valid inputs with 0 violations, 3 invalid inputs rejected before any AI call, regeneration T12 passed). Outputs saved in `test-data/outputs/`.
+- Prompt comparison (T01, T06 x 3 runs per version): 8 of the 18 calls failed with the free-tier daily quota error (HTTP 429). The runner now records API failures separately instead of counting them as prompt results, and `--recompute` rebuilds the counts from saved outputs without calling the API.
+- Added automatic model fallback in `llm.py` (3.5 Flash-Lite, then 3.5 / 3.7 / 3.8 Flash) for quota and overload errors, plus a 150 s request timeout. The app shows which model produced each plan.
+- Added a "Load a test case" control to the sidebar so the saved test inputs can be re-run in the app.
+- Filled team details, the contribution table and the module statuses in the report.

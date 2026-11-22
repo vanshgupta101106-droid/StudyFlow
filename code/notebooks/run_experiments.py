@@ -128,11 +128,16 @@ def run_comparison(ids, runs, api_key, model, pause):
                 print(f"[compare {tid} {key} run {r}] ...", flush=True)
                 res = pipeline.run(t, key, api_key, model=model, today=today)
                 st = stats[key]
-                st["n"] += 1
                 if key == "v3":
                     save(OUTPUTS / key / f"{tid}_run{r}.json", res)
                 else:
                     save(OUTPUTS / key / f"{tid}_run{r}.md", res["raw"] or "\n".join(res["errors"]))
+                if res["status"] == "llm_error":
+                    # API failure (quota / outage), not a prompt result: do not count it
+                    st["api_errors"] = st.get("api_errors", 0) + 1
+                    time.sleep(pause)
+                    continue
+                st["n"] += 1
                 m = text_metrics(res["raw"] or "", t)
                 for k in ("subjects", "dates", "revision"):
                     st[k] += m[k]
@@ -142,7 +147,39 @@ def run_comparison(ids, runs, api_key, model, pause):
                     st["viol"].append(n_viol)
                     st["zero_viol"] += n_viol == 0
                 time.sleep(pause)
+    write_comparison(ids, runs, model, stats)
 
+
+def recompute_from_saved(ids, runs, model):
+    """Rebuild the comparison counts from the saved output files, without calling the API."""
+    stats = {v: {"n": 0, "subjects": 0, "dates": 0, "revision": 0, "json": 0, "zero_viol": 0, "viol": []}
+             for v in ("v1", "v2", "v3")}
+    for tid in ids:
+        t = load_test(tid)
+        for key in ("v1", "v2", "v3"):
+            for r in range(1, runs + 1):
+                st = stats[key]
+                if key == "v3":
+                    res = json.loads((OUTPUTS / key / f"{tid}_run{r}.json").read_text(encoding="utf-8"))
+                    raw, status = res.get("raw") or "", res["status"]
+                else:
+                    raw = (OUTPUTS / key / f"{tid}_run{r}.md").read_text(encoding="utf-8")
+                    status = "llm_error" if raw.startswith("LLM call failed") else "text"
+                if status == "llm_error":
+                    st["api_errors"] = st.get("api_errors", 0) + 1
+                    continue
+                st["n"] += 1
+                m = text_metrics(raw, t)
+                for k in ("subjects", "dates", "revision"):
+                    st[k] += m[k]
+                if status == "ok":
+                    st["json"] += 1
+                    st["viol"].append(len(res["check"]["violations"]))
+                    st["zero_viol"] += len(res["check"]["violations"]) == 0
+    write_comparison(ids, runs, model, stats)
+
+
+def write_comparison(ids, runs, model, stats):
     def result_text(v):
         st = stats[v]
         n = st["n"]
@@ -165,6 +202,11 @@ def run_comparison(ids, runs, api_key, model, pause):
         js = f"{st['json']}/{n}" if v == "v3" else "n/a (free text)"
         zv = f"{st['zero_viol']}/{n}" if v == "v3" else "not checkable"
         lines.append(f"| {v} | {st['subjects']}/{n} | {st['dates']}/{n} | {st['revision']}/{n} | {js} | {zv} |")
+    errs = {v: st.get("api_errors", 0) for v, st in stats.items() if st.get("api_errors")}
+    if errs:
+        lines += ["", "Runs that failed with an API error (for example the free-tier daily quota, HTTP 429) are "
+                  "not prompt results, so they are excluded from the counts above: "
+                  + ", ".join(f"{v}: {n}" for v, n in errs.items()) + "."]
     lines += ["", "Saved outputs: `test-data/outputs/v1/`, `v2/`, `v3/` (one file per run)."]
     save(OUTPUTS / "prompt_comparison.md", "\n".join(lines) + "\n")
 
@@ -177,7 +219,14 @@ def main():
     ap.add_argument("--no-compare", action="store_true")
     ap.add_argument("--model", default=llm.DEFAULT_MODEL)
     ap.add_argument("--pause", type=float, default=7.0, help="Seconds between calls (free-tier rate limits)")
+    ap.add_argument("--recompute", action="store_true",
+                    help="Only rebuild the comparison counts from saved outputs (no API calls)")
     args = ap.parse_args()
+
+    if args.recompute:
+        recompute_from_saved(args.compare, args.runs, args.model)
+        print("Comparison rebuilt -> test-data/outputs/prompt_comparison.md")
+        return
 
     api_key = llm.get_api_key()
     if not api_key:

@@ -40,7 +40,7 @@ copy .streamlit\secrets.toml.example .streamlit\secrets.toml   # then paste your
 streamlit run code/application/app.py
 ```
 
-The app also asks for the key in its sidebar if no secret is set.
+The app also asks for the key in its sidebar if no secret is set. Use **Load a test case** in the sidebar to fill the form with any saved test input (T01–T12).
 
 ## Tests and experiments
 

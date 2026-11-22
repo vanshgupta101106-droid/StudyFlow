@@ -1,0 +1,699 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Morning (start at 07:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- Machine Learning | 2026-12-08 | Hard | not specified | ~29 h\n- Statistics | 2026-12-10 | Medium | not specified | ~22 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 1.5 h | Machine Learning, Statistics | -\n- 2026-11-24 | Tue | 1.5 h | Machine Learning, Statistics | -\n- 2026-11-25 | Wed | 1.5 h | Machine Learning, Statistics | -\n- 2026-11-26 | Thu | 1.5 h | Machine Learning, Statistics | -\n- 2026-11-27 | Fri | 1.5 h | Machine Learning, Statistics | -\n- 2026-11-28 | Sat | 8 h | Machine Learning, Statistics | -\n- 2026-11-29 | Sun | 8 h | Machine Learning, Statistics | -\n- 2026-11-30 | Mon | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-01 | Tue | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-02 | Wed | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-03 | Thu | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-04 | Fri | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-05 | Sat | 8 h | Machine Learning, Statistics | -\n- 2026-12-06 | Sun | 8 h | Machine Learning, Statistics | -\n- 2026-12-07 | Mon | 1.5 h | Machine Learning, Statistics | -\n- 2026-12-08 | Tue | 1 h | Statistics | Exam today: Machine Learning (half day available)\n- 2026-12-09 | Wed | 1.5 h | Statistics | -\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This study plan maximizes efficiency by allocating all 51 available study hours across the preparation window. Machine Learning (Hard difficulty) receives its full 29 target hours prior to its exam on December 8, while Statistics (Medium difficulty) receives 22 target hours leading up to its exam on December 10, complete with dedicated pre-exam revision sessions.\",\n  \"warnings\": [],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Supervised Learning Fundamentals & Linear/Logistic Regression\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Probability Theory & Random Variables\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Decision Trees, Entropy & Information Gain\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Hypothesis Testing Fundamentals & Z-Tests/T-Tests\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Support Vector Machines & Kernel Tricks\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Ensemble Methods, Bagging & Random Forests\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Point Estimation & Confidence Intervals\"},\n        {\"start\": \"10:15\", \"end\": \"10:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"10:30\", \"end\": \"12:00\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Model Evaluation Metrics & Cross-Validation Problems\"},\n        {\"start\": \"12:00\", \"end\": \"12:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"12:15\", \"end\": \"13:45\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Confidence Interval & Hypothesis Testing Numericals\"},\n        {\"start\": \"13:45\", \"end\": \"14:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"14:00\", \"end\": \"15:00\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Neural Networks & Backpropagation Principles\"},\n        {\"start\": \"15:00\", \"end\": \"15:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"15:15\", \"end\": \"16:15\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"ANOVA & Linear Regression Analysis\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Unsupervised Learning, K-Means & Hierarchical Clustering\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Chi-Square Tests & Non-parametric Statistics\"},\n        {\"start\": \"10:15\", \"end\": \"10:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"10:30\", \"end\": \"12:00\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Dimensionality Reduction (PCA) Problem Solving\"},\n        {\"start\": \"12:00\", \"end\": \"12:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"12:15\", \"end\": \"13:45\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Probability Distributions & Expected Value Problems\"},\n        {\"start\": \"13:45\", \"end\": \"14:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"14:00\", \"end\": \"15:00\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Gradient Descent Variants & Optimization Algorithms\"},\n        {\"start\": \"15:00\", \"end\": \"15:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"15:15\", \"end\": \"16:15\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Bayesian Inference & Decision Theory\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Hyperparameter Tuning, L1/L2 Regularization\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Time Series Analysis & Autocorrelation\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Naive Bayes & Probabilistic Graphical Models\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-03\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Advanced Hypothesis Testing & Regression Problems\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-04\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Machine Learning Algorithm Selection & Comparison\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-05\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Deep Learning Architectures (CNNs & RNNs)\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Statistics\", \"activity\": \"Study\", \"topic\": \"Multivariate Analysis & Correlation Matrix Analysis\"},\n        {\"start\": \"10:15\", \"end\": \"10:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"10:30\", \"end\": \"12:00\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Deep Learning & Loss Function Problems\"},\n        {\"start\": \"12:00\", \"end\": \"12:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"12:15\", \"end\": \"13:45\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"ANOVA & Time Series Practice Questions\"},\n        {\"start\": \"13:45\", \"end\": \"14:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"14:00\", \"end\": \"15:00\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Feature Engineering & Data Preprocessing Drills\"},\n        {\"start\": \"15:00\", \"end\": \"15:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"15:15\", \"end\": \"16:15\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Mixed Statistical Inference Past Paper Questions\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-06\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Natural Language Processing & Sequential Models\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Comprehensive Statistics Problem Set\"},\n        {\"start\": \"10:15\", \"end\": \"10:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"10:30\", \"end\": \"12:00\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Past Paper 1 - Supervised & Unsupervised ML\"},\n        {\"start\": \"12:00\", \"end\": \"12:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"12:15\", \"end\": \"13:45\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Past Paper 2 - Neural Networks & Optimization\"},\n        {\"start\": \"13:45\", \"end\": \"14:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"14:00\", \"end\": \"15:00\", \"subject\": \"Machine Learning\", \"activity\": \"Study\", \"topic\": \"Bias-Variance Tradeoff & Error Analysis\"},\n        {\"start\": \"15:00\", \"end\": \"15:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"15:15\", \"end\": \"16:15\", \"subject\": \"Machine Learning\", \"activity\": \"Practice\", \"topic\": \"Machine Learning Formulae & Derivation Review\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-07\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Machine Learning\", \"activity\": \"Revision\", \"topic\": \"Final Complete Machine Learning Exam Revision\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-08\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Statistics\", \"activity\": \"Practice\", \"topic\": \"Targeted Statistical Methods & Formula Drill\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-09\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Statistics\", \"activity\": \"Revision\", \"topic\": \"Final Comprehensive Statistics Exam Revision\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\"subject\": \"Machine Learning\", \"planned_hours\": 29.0},\n    {\"subject\": \"Statistics\", \"planned_hours\": 22.0}\n  ],\n  \"tips\": [\n    \"Utilize weekend 8-hour blocks effectively by sticking strictly to scheduled 15-minute breaks to avoid mental exhaustion.\",\n    \"For Machine Learning, focus on understanding mathematical derivations alongside intuition, especially for SVMs, Backpropagation, and PCA.\",\n    \"On Statistics practice days, solve problems by hand to build speed for hypothesis testing and confidence interval calculations.\",\n    \"Treat the final day revision sessions (Dec 07 for ML and Dec 09 for Stats) as low-stress formula reviews to arrive at exams well-rested.\"\n  ]\n}",
+  "plan": {
+    "summary": "This study plan maximizes efficiency by allocating all 51 available study hours across the preparation window. Machine Learning (Hard difficulty) receives its full 29 target hours prior to its exam on December 8, while Statistics (Medium difficulty) receives 22 target hours leading up to its exam on December 10, complete with dedicated pre-exam revision sessions.",
+    "warnings": [],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Supervised Learning Fundamentals & Linear/Logistic Regression"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Probability Theory & Random Variables"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Decision Trees, Entropy & Information Gain"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Hypothesis Testing Fundamentals & Z-Tests/T-Tests"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Support Vector Machines & Kernel Tricks"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Ensemble Methods, Bagging & Random Forests"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Point Estimation & Confidence Intervals"
+          },
+          {
+            "start": "10:15",
+            "end": "10:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "10:30",
+            "end": "12:00",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Model Evaluation Metrics & Cross-Validation Problems"
+          },
+          {
+            "start": "12:00",
+            "end": "12:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "12:15",
+            "end": "13:45",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Confidence Interval & Hypothesis Testing Numericals"
+          },
+          {
+            "start": "13:45",
+            "end": "14:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:00",
+            "end": "15:00",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Neural Networks & Backpropagation Principles"
+          },
+          {
+            "start": "15:00",
+            "end": "15:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "15:15",
+            "end": "16:15",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "ANOVA & Linear Regression Analysis"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Unsupervised Learning, K-Means & Hierarchical Clustering"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Chi-Square Tests & Non-parametric Statistics"
+          },
+          {
+            "start": "10:15",
+            "end": "10:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "10:30",
+            "end": "12:00",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Dimensionality Reduction (PCA) Problem Solving"
+          },
+          {
+            "start": "12:00",
+            "end": "12:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "12:15",
+            "end": "13:45",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Probability Distributions & Expected Value Problems"
+          },
+          {
+            "start": "13:45",
+            "end": "14:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:00",
+            "end": "15:00",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Gradient Descent Variants & Optimization Algorithms"
+          },
+          {
+            "start": "15:00",
+            "end": "15:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "15:15",
+            "end": "16:15",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Bayesian Inference & Decision Theory"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Hyperparameter Tuning, L1/L2 Regularization"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Time Series Analysis & Autocorrelation"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Naive Bayes & Probabilistic Graphical Models"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-03",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Advanced Hypothesis Testing & Regression Problems"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-04",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Machine Learning Algorithm Selection & Comparison"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-05",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Deep Learning Architectures (CNNs & RNNs)"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Statistics",
+            "activity": "Study",
+            "topic": "Multivariate Analysis & Correlation Matrix Analysis"
+          },
+          {
+            "start": "10:15",
+            "end": "10:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "10:30",
+            "end": "12:00",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Deep Learning & Loss Function Problems"
+          },
+          {
+            "start": "12:00",
+            "end": "12:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "12:15",
+            "end": "13:45",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "ANOVA & Time Series Practice Questions"
+          },
+          {
+            "start": "13:45",
+            "end": "14:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:00",
+            "end": "15:00",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Feature Engineering & Data Preprocessing Drills"
+          },
+          {
+            "start": "15:00",
+            "end": "15:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "15:15",
+            "end": "16:15",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Mixed Statistical Inference Past Paper Questions"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-06",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Natural Language Processing & Sequential Models"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Comprehensive Statistics Problem Set"
+          },
+          {
+            "start": "10:15",
+            "end": "10:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "10:30",
+            "end": "12:00",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Past Paper 1 - Supervised & Unsupervised ML"
+          },
+          {
+            "start": "12:00",
+            "end": "12:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "12:15",
+            "end": "13:45",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Past Paper 2 - Neural Networks & Optimization"
+          },
+          {
+            "start": "13:45",
+            "end": "14:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:00",
+            "end": "15:00",
+            "subject": "Machine Learning",
+            "activity": "Study",
+            "topic": "Bias-Variance Tradeoff & Error Analysis"
+          },
+          {
+            "start": "15:00",
+            "end": "15:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "15:15",
+            "end": "16:15",
+            "subject": "Machine Learning",
+            "activity": "Practice",
+            "topic": "Machine Learning Formulae & Derivation Review"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-07",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Machine Learning",
+            "activity": "Revision",
+            "topic": "Final Complete Machine Learning Exam Revision"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-08",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Statistics",
+            "activity": "Practice",
+            "topic": "Targeted Statistical Methods & Formula Drill"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-09",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Statistics",
+            "activity": "Revision",
+            "topic": "Final Comprehensive Statistics Exam Revision"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "Machine Learning",
+        "planned_hours": 29.0
+      },
+      {
+        "subject": "Statistics",
+        "planned_hours": 22.0
+      }
+    ],
+    "tips": [
+      "Utilize weekend 8-hour blocks effectively by sticking strictly to scheduled 15-minute breaks to avoid mental exhaustion.",
+      "For Machine Learning, focus on understanding mathematical derivations alongside intuition, especially for SVMs, Backpropagation, and PCA.",
+      "On Statistics practice days, solve problems by hand to build speed for hypothesis testing and confidence interval calculations.",
+      "Treat the final day revision sessions (Dec 07 for ML and Dec 09 for Stats) as low-stress formula reviews to arrive at exams well-rested."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "Machine Learning": 29.0,
+      "Statistics": 22.0
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 8.0,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 8.0,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": "Thu",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": "Fri",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": "Sat",
+      "hours": 8.0,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": "Sun",
+      "hours": 8.0,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-07",
+      "weekday": "Mon",
+      "hours": 1.5,
+      "allowed": [
+        "Machine Learning",
+        "Statistics"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-08",
+      "weekday": "Tue",
+      "hours": 1.0,
+      "allowed": [
+        "Statistics"
+      ],
+      "note": "Exam today: Machine Learning (half day available)"
+    },
+    {
+      "date": "2026-12-09",
+      "weekday": "Wed",
+      "hours": 1.5,
+      "allowed": [
+        "Statistics"
+      ],
+      "note": ""
+    }
+  ],
+  "targets": {
+    "Machine Learning": 29.0,
+    "Statistics": 22.0
+  },
+  "temperature": 0.3
+}

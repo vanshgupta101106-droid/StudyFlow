@@ -1,0 +1,49 @@
+{
+  "model": "gemini-3.6-flash",
+  "tests": [
+    "T01",
+    "T06"
+  ],
+  "runs": 3,
+  "stats": {
+    "v1": {
+      "n": 4,
+      "subjects": 4,
+      "dates": 0,
+      "revision": 4,
+      "json": 0,
+      "zero_viol": 0,
+      "viol": [],
+      "api_errors": 2
+    },
+    "v2": {
+      "n": 3,
+      "subjects": 3,
+      "dates": 3,
+      "revision": 3,
+      "json": 0,
+      "zero_viol": 0,
+      "viol": [],
+      "api_errors": 3
+    },
+    "v3": {
+      "n": 3,
+      "subjects": 3,
+      "dates": 3,
+      "revision": 3,
+      "json": 3,
+      "zero_viol": 3,
+      "viol": [
+        0,
+        0,
+        0
+      ],
+      "api_errors": 3
+    }
+  },
+  "result": {
+    "v1": "4 runs (T01, T06 x 3): all subjects named 4/4, real start date used 0/4, revision mentioned 4/4; free text, so constraints could not be checked automatically (0/4 machine-checkable)",
+    "v2": "3 runs (T01, T06 x 3): all subjects named 3/3, real start date used 3/3, revision mentioned 3/3; free text, so constraints could not be checked automatically (0/3 machine-checkable)",
+    "v3": "3 runs (T01, T06 x 3): all subjects named 3/3, real start date used 3/3, revision mentioned 3/3; valid JSON 3/3; 0 constraint violations in 3/3 (average 0.0 violations per run)"
+  }
+}

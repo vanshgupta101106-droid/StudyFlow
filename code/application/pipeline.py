@@ -39,8 +39,10 @@ def run(data: dict, prompt_key: str, api_key: str, *, model: str = llm.DEFAULT_M
     result["temperature"] = prompt.temperature
 
     try:
+        info: dict = {}
         result["raw"] = llm.generate(result["system"], result["user"], temperature=prompt.temperature,
-                                     json_output=prompt.json_output, api_key=api_key, model=model)
+                                     json_output=prompt.json_output, api_key=api_key, model=model, info=info)
+        result["model"] = info.get("model", model)  # may be a fallback model if the quota ran out
     except Exception as e:
         result["status"] = "llm_error"
         result["errors"] = [str(e)]

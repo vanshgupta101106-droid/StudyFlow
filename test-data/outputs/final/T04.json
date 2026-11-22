@@ -1,0 +1,561 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Evening (start at 17:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- Computer Networks | 2026-12-01 | Medium | not specified | ~13.5 h\n- Software Engineering | 2026-12-02 | Easy | not specified | ~9 h\n- Algorithms | 2026-12-03 | Hard | not specified | ~18 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-24 | Tue | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-25 | Wed | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-26 | Thu | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-27 | Fri | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-28 | Sat | 6 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-29 | Sun | 6 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-11-30 | Mon | 4 h | Computer Networks, Software Engineering, Algorithms | -\n- 2026-12-01 | Tue | 2 h | Software Engineering, Algorithms | Exam today: Computer Networks (half day available)\n- 2026-12-02 | Wed | 2 h | Algorithms | Exam today: Software Engineering (half day available)\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This study plan optimizes the 40 total available hours from November 23 to December 2 to cover all target hours across Computer Networks, Software Engineering, and Algorithms. Study load is prioritized by difficulty and exam proximity, giving dedicated pre-exam revision days right before each subject's exam date.\",\n  \"warnings\": [\n    \"Total available study hours (40.0h) fall slightly short of the combined target hours (~40.5h). Software Engineering is planned for 8.5h instead of 9h to fit the 40-hour capacity perfectly.\"\n  ],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"Graph Algorithms (BFS, DFS, Topological Sort)\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"OSI & TCP/IP Layer Architecture\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Software Engineering\", \"activity\": \"Study\", \"topic\": \"SDLC Models & Agile Methodology\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"Divide & Conquer (Merge Sort, Quick Sort, Recurrences)\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"Data Link Layer & Framing Protocols\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Software Engineering\", \"activity\": \"Study\", \"topic\": \"Requirements Engineering & Use Case Diagrams\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"IP Addressing, Subnetting & CIDR\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"Dynamic Programming Fundamentals\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Software Engineering\", \"activity\": \"Study\", \"topic\": \"Software Architecture & Structural Diagrams\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"Greedy Algorithms & Minimum Spanning Trees\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"Routing Protocols (RIP, OSPF, BGP)\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Software Engineering\", \"activity\": \"Study\", \"topic\": \"Software Testing Strategies & QA\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"Transport Layer (TCP, UDP, Congestion Control)\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Algorithms\", \"activity\": \"Practice\", \"topic\": \"DP & Greedy Problem Solving\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Software Engineering\", \"activity\": \"Study\", \"topic\": \"Software Maintenance, Refactoring & Metrics\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Computer Networks\", \"activity\": \"Study\", \"topic\": \"Application Layer Protocols (DNS, HTTP, SMTP)\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Computer Networks\", \"activity\": \"Practice\", \"topic\": \"Subnetting & Routing Numerical Problems\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"22:00\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"Shortest Path & Network Flow Algorithms\"},\n        {\"start\": \"22:00\", \"end\": \"22:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"22:15\", \"end\": \"23:45\", \"subject\": \"Algorithms\", \"activity\": \"Practice\", \"topic\": \"Advanced Graph Problem Solving\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Algorithms\", \"activity\": \"Study\", \"topic\": \"NP-Completeness & Backtracking Concepts\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Algorithms\", \"activity\": \"Practice\", \"topic\": \"Past Exam Problem Sets\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"22:00\", \"subject\": \"Software Engineering\", \"activity\": \"Practice\", \"topic\": \"UML Diagrams & Design Pattern Problems\"},\n        {\"start\": \"22:00\", \"end\": \"22:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"22:15\", \"end\": \"23:45\", \"subject\": \"Algorithms\", \"activity\": \"Practice\", \"topic\": \"Complex Algorithm Pseudocode Practice\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Computer Networks\", \"activity\": \"Revision\", \"topic\": \"Core Layer Summary & High-Yield Protocols\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Computer Networks\", \"activity\": \"Revision\", \"topic\": \"Formulas, Subnetting Review & Mock Questions\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Algorithms\", \"activity\": \"Practice\", \"topic\": \"Algorithm Analysis Refresher\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Software Engineering\", \"activity\": \"Revision\", \"topic\": \"Complete Theory & Software Models Review\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:15\", \"subject\": \"Software Engineering\", \"activity\": \"Revision\", \"topic\": \"Testing Types & Structural Diagram Flashcards\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Algorithms\", \"activity\": \"Revision\", \"topic\": \"Pseudocode, Proofs & Time/Space Complexity\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:15\", \"subject\": \"Algorithms\", \"activity\": \"Revision\", \"topic\": \"Final Formula & Key Algorithm Steps Summary\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\n      \"subject\": \"Computer Networks\",\n      \"planned_hours\": 13.5\n    },\n    {\n      \"subject\": \"Software Engineering\",\n      \"planned_hours\": 8.5\n    },\n    {\n      \"subject\": \"Algorithms\",\n      \"planned_hours\": 18.0\n    }\n  ],\n  \"tips\": [\n    \"Focus heavily on solving numerical problems for Subnetting and TCP window sizing during Computer Networks practice sessions.\",\n    \"For Algorithms, practice writing pseudocode on paper to simulate exam conditions.\",\n    \"Use active recall and flashcards for Software Engineering terminology and testing definitions during the pre-exam revision slot.\"\n  ]\n}",
+  "plan": {
+    "summary": "This study plan optimizes the 40 total available hours from November 23 to December 2 to cover all target hours across Computer Networks, Software Engineering, and Algorithms. Study load is prioritized by difficulty and exam proximity, giving dedicated pre-exam revision days right before each subject's exam date.",
+    "warnings": [
+      "Total available study hours (40.0h) fall slightly short of the combined target hours (~40.5h). Software Engineering is planned for 8.5h instead of 9h to fit the 40-hour capacity perfectly."
+    ],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "Graph Algorithms (BFS, DFS, Topological Sort)"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "OSI & TCP/IP Layer Architecture"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Software Engineering",
+            "activity": "Study",
+            "topic": "SDLC Models & Agile Methodology"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "Divide & Conquer (Merge Sort, Quick Sort, Recurrences)"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "Data Link Layer & Framing Protocols"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Software Engineering",
+            "activity": "Study",
+            "topic": "Requirements Engineering & Use Case Diagrams"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "IP Addressing, Subnetting & CIDR"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "Dynamic Programming Fundamentals"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Software Engineering",
+            "activity": "Study",
+            "topic": "Software Architecture & Structural Diagrams"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "Greedy Algorithms & Minimum Spanning Trees"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "Routing Protocols (RIP, OSPF, BGP)"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Software Engineering",
+            "activity": "Study",
+            "topic": "Software Testing Strategies & QA"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "Transport Layer (TCP, UDP, Congestion Control)"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Algorithms",
+            "activity": "Practice",
+            "topic": "DP & Greedy Problem Solving"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Software Engineering",
+            "activity": "Study",
+            "topic": "Software Maintenance, Refactoring & Metrics"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Computer Networks",
+            "activity": "Study",
+            "topic": "Application Layer Protocols (DNS, HTTP, SMTP)"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Computer Networks",
+            "activity": "Practice",
+            "topic": "Subnetting & Routing Numerical Problems"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "22:00",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "Shortest Path & Network Flow Algorithms"
+          },
+          {
+            "start": "22:00",
+            "end": "22:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "22:15",
+            "end": "23:45",
+            "subject": "Algorithms",
+            "activity": "Practice",
+            "topic": "Advanced Graph Problem Solving"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Algorithms",
+            "activity": "Study",
+            "topic": "NP-Completeness & Backtracking Concepts"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Algorithms",
+            "activity": "Practice",
+            "topic": "Past Exam Problem Sets"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "22:00",
+            "subject": "Software Engineering",
+            "activity": "Practice",
+            "topic": "UML Diagrams & Design Pattern Problems"
+          },
+          {
+            "start": "22:00",
+            "end": "22:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "22:15",
+            "end": "23:45",
+            "subject": "Algorithms",
+            "activity": "Practice",
+            "topic": "Complex Algorithm Pseudocode Practice"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Computer Networks",
+            "activity": "Revision",
+            "topic": "Core Layer Summary & High-Yield Protocols"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Computer Networks",
+            "activity": "Revision",
+            "topic": "Formulas, Subnetting Review & Mock Questions"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Algorithms",
+            "activity": "Practice",
+            "topic": "Algorithm Analysis Refresher"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Software Engineering",
+            "activity": "Revision",
+            "topic": "Complete Theory & Software Models Review"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:15",
+            "subject": "Software Engineering",
+            "activity": "Revision",
+            "topic": "Testing Types & Structural Diagram Flashcards"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Algorithms",
+            "activity": "Revision",
+            "topic": "Pseudocode, Proofs & Time/Space Complexity"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:15",
+            "subject": "Algorithms",
+            "activity": "Revision",
+            "topic": "Final Formula & Key Algorithm Steps Summary"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "Computer Networks",
+        "planned_hours": 13.5
+      },
+      {
+        "subject": "Software Engineering",
+        "planned_hours": 8.5
+      },
+      {
+        "subject": "Algorithms",
+        "planned_hours": 18.0
+      }
+    ],
+    "tips": [
+      "Focus heavily on solving numerical problems for Subnetting and TCP window sizing during Computer Networks practice sessions.",
+      "For Algorithms, practice writing pseudocode on paper to simulate exam conditions.",
+      "Use active recall and flashcards for Software Engineering terminology and testing definitions during the pre-exam revision slot."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "Computer Networks": 13.5,
+      "Software Engineering": 8.5,
+      "Algorithms": 18.0
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 6.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 6.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "Computer Networks",
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 2.0,
+      "allowed": [
+        "Software Engineering",
+        "Algorithms"
+      ],
+      "note": "Exam today: Computer Networks (half day available)"
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 2.0,
+      "allowed": [
+        "Algorithms"
+      ],
+      "note": "Exam today: Software Engineering (half day available)"
+    }
+  ],
+  "targets": {
+    "Computer Networks": 13.5,
+    "Software Engineering": 9.0,
+    "Algorithms": 18.0
+  },
+  "temperature": 0.3
+}

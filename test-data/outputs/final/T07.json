@@ -1,0 +1,555 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [
+    "2 exams on the same day (2026-12-02): Physics, Chemistry."
+  ],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Evening (start at 17:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- Physics | 2026-12-02 | Medium | not specified | ~13 h\n- Chemistry | 2026-12-02 | Medium | not specified | ~13 h\n- Maths | 2026-12-04 | Hard | not specified | ~17.5 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 4 h | Physics, Chemistry, Maths | -\n- 2026-11-24 | Tue | 4 h | Physics, Chemistry, Maths | -\n- 2026-11-25 | Wed | 4 h | Physics, Chemistry, Maths | -\n- 2026-11-26 | Thu | 4 h | Physics, Chemistry, Maths | -\n- 2026-11-27 | Fri | 4 h | Physics, Chemistry, Maths | -\n- 2026-11-28 | Sat | 5 h | Physics, Chemistry, Maths | -\n- 2026-11-29 | Sun | 5 h | Physics, Chemistry, Maths | -\n- 2026-11-30 | Mon | 4 h | Physics, Chemistry, Maths | -\n- 2026-12-01 | Tue | 4 h | Physics, Chemistry, Maths | -\n- 2026-12-02 | Wed | 2 h | Maths | Exam today: Physics, Chemistry (half day available)\n- 2026-12-03 | Thu | 4 h | Maths | -\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This study plan prioritizes Physics and Chemistry prior to their December 2 exam, allocating dedicated revision on December 1. Hard-difficulty Maths receives steady practice throughout and exclusive focus on December 2 and 3 leading up to its December 4 exam.\",\n  \"warnings\": [],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Mechanics & Kinematics\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:15\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Study\",\n          \"topic\": \"Atomic Structure & Chemical Bonding\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"20:30\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:30\",\n          \"end\": \"21:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Study\",\n          \"topic\": \"Calculus Foundations\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Study\",\n          \"topic\": \"Differential Calculus\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:00\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Work, Energy & Power\"\n        },\n        {\n          \"start\": \"20:00\",\n          \"end\": \"20:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"21:30\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Study\",\n          \"topic\": \"Chemical Thermodynamics\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Study\",\n          \"topic\": \"Chemical Equilibrium & Kinetics\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:00\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Electromagnetism & Circuit Theory\"\n        },\n        {\n          \"start\": \"20:00\",\n          \"end\": \"20:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"21:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Study\",\n          \"topic\": \"Integral Calculus\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Integration Techniques & Applications\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:00\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Study\",\n          \"topic\": \"Organic Chemistry Fundamentals\"\n        },\n        {\n          \"start\": \"20:00\",\n          \"end\": \"20:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"21:30\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Circuit & Dynamics Problem Solving\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Waves & Optics\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:00\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Organic Reaction Mechanisms\"\n        },\n        {\n          \"start\": \"20:00\",\n          \"end\": \"20:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"21:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Study\",\n          \"topic\": \"Vectors & 3D Geometry\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:45\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Vectors & Calculus Numerical Problems\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"19:00\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"19:00\",\n          \"end\": \"20:30\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Optics & Electromagnetism Numericals\"\n        },\n        {\n          \"start\": \"20:30\",\n          \"end\": \"20:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:45\",\n          \"end\": \"22:30\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Study\",\n          \"topic\": \"Coordination Compounds & Electrochemistry\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:45\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Study\",\n          \"topic\": \"Algebra & Complex Numbers\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"19:00\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"19:00\",\n          \"end\": \"20:30\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Physical Chemistry Practice Problems\"\n        },\n        {\n          \"start\": \"20:30\",\n          \"end\": \"20:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:45\",\n          \"end\": \"22:30\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Modern Physics & Thermal Physics\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Algebra & Calculus Mock Questions\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"20:00\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Past Paper Problem Solving\"\n        },\n        {\n          \"start\": \"20:00\",\n          \"end\": \"20:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"20:15\",\n          \"end\": \"21:30\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Comprehensive Practice Test\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"19:00\",\n          \"subject\": \"Physics\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Formulae Sheet & High-Yield Concept Revision\"\n        },\n        {\n          \"start\": \"19:00\",\n          \"end\": \"19:15\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"19:15\",\n          \"end\": \"21:15\",\n          \"subject\": \"Chemistry\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Key Reactions & Formulae Final Review\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"19:00\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Differential Equations & Probability\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-03\",\n      \"sessions\": [\n        {\n          \"start\": \"17:00\",\n          \"end\": \"18:30\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Full-Length Mock Paper Practice\"\n        },\n        {\n          \"start\": \"18:30\",\n          \"end\": \"18:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"18:45\",\n          \"end\": \"21:15\",\n          \"subject\": \"Maths\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Comprehensive Formulae & Concept Final Review\"\n        }\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\n      \"subject\": \"Physics\",\n      \"planned_hours\": 13.25\n    },\n    {\n      \"subject\": \"Chemistry\",\n      \"planned_hours\": 13.25\n    },\n    {\n      \"subject\": \"Maths\",\n      \"planned_hours\": 17.5\n    }\n  ],\n  \"tips\": [\n    \"Prioritize key formula sheets on December 1 to build confidence before the Physics and Chemistry exams.\",\n    \"Utilize the post-exam block on December 2 to shift completely into Maths problem-solving mode.\",\n    \"Ensure short 15-minute breaks are taken away from screens to maintain focus throughout long evening blocks.\"\n  ]\n}",
+  "plan": {
+    "summary": "This study plan prioritizes Physics and Chemistry prior to their December 2 exam, allocating dedicated revision on December 1. Hard-difficulty Maths receives steady practice throughout and exclusive focus on December 2 and 3 leading up to its December 4 exam.",
+    "warnings": [],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Mechanics & Kinematics"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Atomic Structure & Chemical Bonding"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Calculus Foundations"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Differential Calculus"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:00",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Work, Energy & Power"
+          },
+          {
+            "start": "20:00",
+            "end": "20:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:15",
+            "end": "21:30",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Chemical Thermodynamics"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Chemical Equilibrium & Kinetics"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:00",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Electromagnetism & Circuit Theory"
+          },
+          {
+            "start": "20:00",
+            "end": "20:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:15",
+            "end": "21:30",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Integral Calculus"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Integration Techniques & Applications"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:00",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Organic Chemistry Fundamentals"
+          },
+          {
+            "start": "20:00",
+            "end": "20:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:15",
+            "end": "21:30",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Circuit & Dynamics Problem Solving"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Waves & Optics"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:00",
+            "subject": "Chemistry",
+            "activity": "Practice",
+            "topic": "Organic Reaction Mechanisms"
+          },
+          {
+            "start": "20:00",
+            "end": "20:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:15",
+            "end": "21:30",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Vectors & 3D Geometry"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:45",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Vectors & Calculus Numerical Problems"
+          },
+          {
+            "start": "18:45",
+            "end": "19:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "19:00",
+            "end": "20:30",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Optics & Electromagnetism Numericals"
+          },
+          {
+            "start": "20:30",
+            "end": "20:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:45",
+            "end": "22:30",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Coordination Compounds & Electrochemistry"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:45",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Algebra & Complex Numbers"
+          },
+          {
+            "start": "18:45",
+            "end": "19:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "19:00",
+            "end": "20:30",
+            "subject": "Chemistry",
+            "activity": "Practice",
+            "topic": "Physical Chemistry Practice Problems"
+          },
+          {
+            "start": "20:30",
+            "end": "20:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:45",
+            "end": "22:30",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Modern Physics & Thermal Physics"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Algebra & Calculus Mock Questions"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:00",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Past Paper Problem Solving"
+          },
+          {
+            "start": "20:00",
+            "end": "20:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:15",
+            "end": "21:30",
+            "subject": "Chemistry",
+            "activity": "Practice",
+            "topic": "Comprehensive Practice Test"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "19:00",
+            "subject": "Physics",
+            "activity": "Revision",
+            "topic": "Formulae Sheet & High-Yield Concept Revision"
+          },
+          {
+            "start": "19:00",
+            "end": "19:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "19:15",
+            "end": "21:15",
+            "subject": "Chemistry",
+            "activity": "Revision",
+            "topic": "Key Reactions & Formulae Final Review"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "19:00",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Differential Equations & Probability"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-03",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Full-Length Mock Paper Practice"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "21:15",
+            "subject": "Maths",
+            "activity": "Revision",
+            "topic": "Comprehensive Formulae & Concept Final Review"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "Physics",
+        "planned_hours": 13.25
+      },
+      {
+        "subject": "Chemistry",
+        "planned_hours": 13.25
+      },
+      {
+        "subject": "Maths",
+        "planned_hours": 17.5
+      }
+    ],
+    "tips": [
+      "Prioritize key formula sheets on December 1 to build confidence before the Physics and Chemistry exams.",
+      "Utilize the post-exam block on December 2 to shift completely into Maths problem-solving mode.",
+      "Ensure short 15-minute breaks are taken away from screens to maintain focus throughout long evening blocks."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "Physics": 13.25,
+      "Chemistry": 13.25,
+      "Maths": 17.5
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 5.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 5.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 4.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 2.0,
+      "allowed": [
+        "Maths"
+      ],
+      "note": "Exam today: Physics, Chemistry (half day available)"
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": "Thu",
+      "hours": 4.0,
+      "allowed": [
+        "Maths"
+      ],
+      "note": ""
+    }
+  ],
+  "targets": {
+    "Physics": 13.0,
+    "Chemistry": 13.0,
+    "Maths": 17.5
+  },
+  "temperature": 0.3
+}

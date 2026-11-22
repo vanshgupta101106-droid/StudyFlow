@@ -1,0 +1,14 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "rejected",
+  "errors": [
+    "No subjects entered. Add at least one subject with an exam date."
+  ],
+  "warnings": [],
+  "system": "",
+  "user": "",
+  "raw": "",
+  "plan": null,
+  "check": null
+}

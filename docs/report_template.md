@@ -28,7 +28,7 @@
 | Link | URL |
 |---|---|
 | Prototype | [FILL https://….streamlit.app] |
-| Repository | [FILL https://github.com/…/StudyFlow] |
+| Repository | https://github.com/vanshgupta101106-droid/StudyFlow |
 | Reel ([FILL] seconds) | [FILL Drive / unlisted YouTube link] |
 
 </div>
@@ -95,11 +95,11 @@ StudyFlow is a Python web application built with Streamlit (`code/application/`)
 | Student Input Module | Form for start date, hours, slot, preferences and an editable subjects table | Working | `app.py` |
 | Input Validation Module | Blocks missing subjects, past dates, negative/zero hours and duplicates; warns about same-day exams and low hours | Working | `validation.py`; covered by unit tests; tests T09–T11 |
 | Prompt Engineering Module | Builds the date calendar and target hours, then fills the saved prompt templates | Working | `planner.py`, `prompt_builder.py`, `prompts/` |
-| AI Study Plan Generator | Calls Gemini with prompt P1 in JSON mode, with retries | [FILL Working / Partly working] | `llm.py`, `pipeline.py`; see Section 4 results |
+| AI Study Plan Generator | Calls Gemini with prompt P1 in JSON mode, with retries | Working | `llm.py`, `pipeline.py`; 8/8 valid-input tests gave valid JSON (Section 4). Falls back to another Gemini Flash model if the free daily quota runs out |
 | Constraint Checker | Checks daily hours, exam dates, overlaps and revision for every subject | Working | `checker.py`; result shown in the app |
 | Timetable Display Module | Day-wise tables, planned-vs-target hours chart, warnings, CSV/JSON download | Working | `app.py` |
-| Revision and Break Management | Revision before every exam, breaks between sessions, practice for harder subjects | [FILL] | Rules in P1; revision verified by the checker |
-| Regeneration Module | Re-plans after blocked dates or a change request, using P2 | [FILL Working / Partly working] | Test T12 |
+| Revision and Break Management | Revision before every exam, breaks between sessions, practice for harder subjects | Working | Rules in P1; revision verified by the checker |
+| Regeneration Module | Re-plans after blocked dates or a change request, using P2 | Working | Test T12: Sunday 29 Nov removed, 0 violations |
 
 ### 3.2 Prompt iteration log
 These are saved versions of prompt P1. The final P1 is v3. P2 is a separate prompt (see Section 2.3). Each result comes from running the version several times on the same inputs; see `test-data/outputs/prompt_comparison.md`.
@@ -114,7 +114,7 @@ These are saved versions of prompt P1. The final P1 is v3. P2 is a separate prom
 
 {{PROMPT_COMPARISON}}
 
-**What we observed:** [FILL 2–4 sentences after reading the saved outputs, e.g. what v1 actually produced and which mistakes v3 still makes.]
+**What we observed:** v1 never used the student's real start date (0/4 runs) and invented its own budget, for example a "7-Day Intensive Sprint Plan assuming 5 to 6 hours of study per day" when the student had 4 h on weekdays and 6 h on weekends. v2 used the real dates and hours in 3/3 runs, but its markdown tables could not be checked automatically, so a hidden mistake could not be detected. v3 returned valid JSON with 0 constraint violations in 3/3 runs, and the final P1 then passed all 8 valid-input tests in Section 4. The T06 comparison runs (8 of the planned 18) failed with the free-tier daily quota error (HTTP 429). These are API failures, not prompt results, so they are excluded from the counts and kept in `test-data/outputs/` as evidence.
 
 **Full text of each version:**
 
@@ -128,26 +128,28 @@ These are saved versions of prompt P1. The final P1 is v3. P2 is a separate prom
 A valid input passes only if the output is valid JSON **and** the automatic constraint checker finds 0 violations. An invalid input passes only if it is rejected before any AI call. The full inputs are in `test-data/inputs/` and the saved outputs in `test-data/outputs/final/`. Failed tests are reported as they happened.
 
 ### 4.2 Screenshots of real runs
-[FILL: insert screenshot – see docs/SUBMISSION_GUIDE.md]
-*Screenshot 1 – Test T01: [FILL caption]*
+These were taken from the running app on 22 Nov 2026. The free daily quota of `gemini-3.6-flash` had been used up by the test run, so the app's automatic fallback answered with `gemini-3.5-flash-lite`, as shown on screen.
 
-[FILL: insert screenshot]
-*Screenshot 2 – Test T09: past exam date rejected by validation*
+![Test T01](screenshots/t01.png)
+*Screenshot 1 – Test T01: day-wise plan for DBMS, OS and Discrete Maths; all hard constraints satisfied; planned vs target hours per subject*
 
-[FILL: insert screenshot]
-*Screenshot 3 – Test T12: plan regenerated after blocking Sunday 29 Nov*
+![Test T09](screenshots/t09.png)
+*Screenshot 2 – Test T09: past exam date rejected by validation, no AI call made*
+
+![Test T12](screenshots/t12.png)
+*Screenshot 3 – Test T12: plan regenerated after blocking Sunday 29 Nov; sessions moved, 0 violations*
 
 ### 4.3 Known limitations and what we will try next
 | # | Limitation | What we will try next |
 |---|---|---|
 | 1 | The LLM can still break a hard constraint. The checker reports it but does not fix it. | Add a repair step that sends the checker's violations back to the model (max 2 retries). |
-| 2 | The free Gemini tier is rate-limited, so quick repeated generations can fail. | Cache identical requests and show a friendly retry timer. |
+| 2 | The free Gemini tier allows only 20 requests per model per day. During testing it ran out, and 8 of 18 comparison runs failed with HTTP 429. The app now falls back to other Gemini Flash models, but a fallback model can give slightly different plans. | Cache identical requests, show a retry timer, and re-run the full comparison on a fresh daily quota. |
 | 3 | Plans are not saved between sessions. | Add calendar (.ics) export and optional saved plans. |
 | 4 | Without topics, session topics are generic because the app does not know the syllabus. | Let students upload or paste the syllabus and split topics from it. |
 
 ## 5. Repository
 
-**Link:** [FILL]
+**Link:** https://github.com/vanshgupta101106-droid/StudyFlow
 
 [FILL: screenshot of the repository home page]
 

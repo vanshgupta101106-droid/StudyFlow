@@ -1,0 +1,614 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Morning (start at 07:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- Physics | 2026-12-01 | Hard | not specified | ~8 h\n- Chemistry | 2026-12-03 | Medium | not specified | ~6 h\n- Maths | 2026-12-05 | Hard | not specified | ~8 h\n- English | 2026-12-07 | Easy | not specified | ~4 h\n- Biology | 2026-12-09 | Medium | not specified | ~6 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-24 | Tue | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-25 | Wed | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-26 | Thu | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-27 | Fri | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-28 | Sat | 3 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-29 | Sun | 3 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-11-30 | Mon | 2 h | Physics, Chemistry, Maths, English, Biology | -\n- 2026-12-01 | Tue | 1 h | Chemistry, Maths, English, Biology | Exam today: Physics (half day available)\n- 2026-12-02 | Wed | 2 h | Chemistry, Maths, English, Biology | -\n- 2026-12-03 | Thu | 1 h | Maths, English, Biology | Exam today: Chemistry (half day available)\n- 2026-12-04 | Fri | 2 h | Maths, English, Biology | -\n- 2026-12-05 | Sat | 1.5 h | English, Biology | Exam today: Maths (half day available)\n- 2026-12-06 | Sun | 3 h | English, Biology | -\n- 2026-12-07 | Mon | 1 h | Biology | Exam today: English (half day available)\n- 2026-12-08 | Tue | 2 h | Biology | -\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This timetable prioritizes subjects with upcoming exam dates while keeping daily study loads within available hour limits. Physics and Maths receive the heaviest early focus due to their difficulty and early exam dates, while Chemistry, English, and Biology are paced across their respective exam windows with mandatory final revision sessions preceding each test.\",\n  \"warnings\": [\n    \"Total available study time across all days is 31.5 hours, slightly below the cumulative target of 32 hours. Planned hours for Maths were adjusted slightly (7.0h planned vs 8.0h target) to strictly satisfy daily availability constraints.\"\n  ],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Mechanics & Dynamics Fundamentals\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Maths\", \"activity\": \"Study\", \"topic\": \"Calculus - Derivatives & Integrals\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Electromagnetism & Waves\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Chemistry\", \"activity\": \"Study\", \"topic\": \"Physical Chemistry Core Concepts\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Optics & Modern Physics\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Maths\", \"activity\": \"Study\", \"topic\": \"Vectors & 3D Geometry\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Physics\", \"activity\": \"Practice\", \"topic\": \"Numerical Problem Solving\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Chemistry\", \"activity\": \"Study\", \"topic\": \"Organic Chemistry Reactions\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Physics\", \"activity\": \"Practice\", \"topic\": \"Formulae & Applied Numericals\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"English\", \"activity\": \"Study\", \"topic\": \"Grammar Rules & Reading Comprehension\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Physics\", \"activity\": \"Practice\", \"topic\": \"Past Exam Papers\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Maths\", \"activity\": \"Practice\", \"topic\": \"Differential Equations & Trigonometry\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Biology\", \"activity\": \"Study\", \"topic\": \"Cell Biology & Genetics\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Chemistry\", \"activity\": \"Study\", \"topic\": \"Inorganic Chemistry & Periodic Trends\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"Physics\", \"activity\": \"Revision\", \"topic\": \"Comprehensive Physics Formula & Concept Review\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:45\", \"end\": \"09:15\", \"subject\": \"Maths\", \"activity\": \"Practice\", \"topic\": \"Algebraic Problem Solving\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Reaction Mechanisms & Equations\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Numerical Problems & Sample Questions\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Chemistry\", \"activity\": \"Revision\", \"topic\": \"Final Chemistry Summary & High-Yield Topics\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-03\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Maths\", \"activity\": \"Practice\", \"topic\": \"Advanced Problem Solving & Past Papers\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-04\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Maths\", \"activity\": \"Practice\", \"topic\": \"Calculus & Geometry Practice\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Maths\", \"activity\": \"Revision\", \"topic\": \"Final Formula Sheet Review & Key Proofs\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-05\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"English\", \"activity\": \"Study\", \"topic\": \"Literature Analysis & Writing Formats\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-06\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:30\", \"subject\": \"English\", \"activity\": \"Revision\", \"topic\": \"Essay Writing Practice & Grammar Review\"},\n        {\"start\": \"08:30\", \"end\": \"08:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:45\", \"end\": \"10:15\", \"subject\": \"Biology\", \"activity\": \"Study\", \"topic\": \"Ecology & Biotechnology Fundamentals\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-07\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Biology\", \"activity\": \"Practice\", \"topic\": \"Human Physiology & Plant Biology Numericals\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-08\",\n      \"sessions\": [\n        {\"start\": \"07:00\", \"end\": \"08:00\", \"subject\": \"Biology\", \"activity\": \"Practice\", \"topic\": \"Diagram Practice & Process Workflows\"},\n        {\"start\": \"08:00\", \"end\": \"08:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short rest\"},\n        {\"start\": \"08:15\", \"end\": \"09:15\", \"subject\": \"Biology\", \"activity\": \"Revision\", \"topic\": \"Final Biology Key Terminology & Concept Review\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\"subject\": \"Physics\", \"planned_hours\": 8.0},\n    {\"subject\": \"Chemistry\", \"planned_hours\": 6.5},\n    {\"subject\": \"Maths\", \"planned_hours\": 7.0},\n    {\"subject\": \"English\", \"planned_hours\": 4.0},\n    {\"subject\": \"Biology\", \"planned_hours\": 6.0}\n  ],\n  \"tips\": [\n    \"Stick strictly to the 07:00 morning start to build momentum before exam days.\",\n    \"Use the day before each exam exclusively for dedicated revision and quick formula recall.\",\n    \"During 15-minute breaks, step away from study materials to keep your focus fresh for the next session.\"\n  ]\n}",
+  "plan": {
+    "summary": "This timetable prioritizes subjects with upcoming exam dates while keeping daily study loads within available hour limits. Physics and Maths receive the heaviest early focus due to their difficulty and early exam dates, while Chemistry, English, and Biology are paced across their respective exam windows with mandatory final revision sessions preceding each test.",
+    "warnings": [
+      "Total available study time across all days is 31.5 hours, slightly below the cumulative target of 32 hours. Planned hours for Maths were adjusted slightly (7.0h planned vs 8.0h target) to strictly satisfy daily availability constraints."
+    ],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Mechanics & Dynamics Fundamentals"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Calculus - Derivatives & Integrals"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Electromagnetism & Waves"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Physical Chemistry Core Concepts"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Physics",
+            "activity": "Study",
+            "topic": "Optics & Modern Physics"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Maths",
+            "activity": "Study",
+            "topic": "Vectors & 3D Geometry"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Numerical Problem Solving"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Organic Chemistry Reactions"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Formulae & Applied Numericals"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "English",
+            "activity": "Study",
+            "topic": "Grammar Rules & Reading Comprehension"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Physics",
+            "activity": "Practice",
+            "topic": "Past Exam Papers"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Differential Equations & Trigonometry"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Biology",
+            "activity": "Study",
+            "topic": "Cell Biology & Genetics"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Chemistry",
+            "activity": "Study",
+            "topic": "Inorganic Chemistry & Periodic Trends"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "Physics",
+            "activity": "Revision",
+            "topic": "Comprehensive Physics Formula & Concept Review"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:45",
+            "end": "09:15",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Algebraic Problem Solving"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Chemistry",
+            "activity": "Practice",
+            "topic": "Reaction Mechanisms & Equations"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Chemistry",
+            "activity": "Practice",
+            "topic": "Numerical Problems & Sample Questions"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Chemistry",
+            "activity": "Revision",
+            "topic": "Final Chemistry Summary & High-Yield Topics"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-03",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Advanced Problem Solving & Past Papers"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-04",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Maths",
+            "activity": "Practice",
+            "topic": "Calculus & Geometry Practice"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Maths",
+            "activity": "Revision",
+            "topic": "Final Formula Sheet Review & Key Proofs"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-05",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "English",
+            "activity": "Study",
+            "topic": "Literature Analysis & Writing Formats"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-06",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:30",
+            "subject": "English",
+            "activity": "Revision",
+            "topic": "Essay Writing Practice & Grammar Review"
+          },
+          {
+            "start": "08:30",
+            "end": "08:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:45",
+            "end": "10:15",
+            "subject": "Biology",
+            "activity": "Study",
+            "topic": "Ecology & Biotechnology Fundamentals"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-07",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Biology",
+            "activity": "Practice",
+            "topic": "Human Physiology & Plant Biology Numericals"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-08",
+        "sessions": [
+          {
+            "start": "07:00",
+            "end": "08:00",
+            "subject": "Biology",
+            "activity": "Practice",
+            "topic": "Diagram Practice & Process Workflows"
+          },
+          {
+            "start": "08:00",
+            "end": "08:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short rest"
+          },
+          {
+            "start": "08:15",
+            "end": "09:15",
+            "subject": "Biology",
+            "activity": "Revision",
+            "topic": "Final Biology Key Terminology & Concept Review"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "Physics",
+        "planned_hours": 8.0
+      },
+      {
+        "subject": "Chemistry",
+        "planned_hours": 6.5
+      },
+      {
+        "subject": "Maths",
+        "planned_hours": 7.0
+      },
+      {
+        "subject": "English",
+        "planned_hours": 4.0
+      },
+      {
+        "subject": "Biology",
+        "planned_hours": 6.0
+      }
+    ],
+    "tips": [
+      "Stick strictly to the 07:00 morning start to build momentum before exam days.",
+      "Use the day before each exam exclusively for dedicated revision and quick formula recall.",
+      "During 15-minute breaks, step away from study materials to keep your focus fresh for the next session."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "Physics": 8.0,
+      "Chemistry": 6.5,
+      "Maths": 7.0,
+      "English": 4.0,
+      "Biology": 6.0
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 3.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 3.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 2.0,
+      "allowed": [
+        "Physics",
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 1.0,
+      "allowed": [
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": "Exam today: Physics (half day available)"
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 2.0,
+      "allowed": [
+        "Chemistry",
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": "Thu",
+      "hours": 1.0,
+      "allowed": [
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": "Exam today: Chemistry (half day available)"
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": "Fri",
+      "hours": 2.0,
+      "allowed": [
+        "Maths",
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": "Sat",
+      "hours": 1.5,
+      "allowed": [
+        "English",
+        "Biology"
+      ],
+      "note": "Exam today: Maths (half day available)"
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": "Sun",
+      "hours": 3.0,
+      "allowed": [
+        "English",
+        "Biology"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-07",
+      "weekday": "Mon",
+      "hours": 1.0,
+      "allowed": [
+        "Biology"
+      ],
+      "note": "Exam today: English (half day available)"
+    },
+    {
+      "date": "2026-12-08",
+      "weekday": "Tue",
+      "hours": 2.0,
+      "allowed": [
+        "Biology"
+      ],
+      "note": ""
+    }
+  ],
+  "targets": {
+    "Physics": 8.0,
+    "Chemistry": 6.0,
+    "Maths": 8.0,
+    "English": 4.0,
+    "Biology": 6.0
+  },
+  "temperature": 0.3
+}

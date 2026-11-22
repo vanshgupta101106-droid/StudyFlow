@@ -1,0 +1,954 @@
+{
+  "prompt_key": "v3",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Evening (start at 17:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- DBMS | 2026-12-05 | Hard | ER model, Normalization, SQL joins, Transactions | ~31.5 h\n- Operating Systems | 2026-12-08 | Medium | Scheduling, Deadlocks, Paging | ~23.5 h\n- Discrete Maths | 2026-12-10 | Easy | Sets, Relations, Graph basics | ~16 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-24 | Tue | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-25 | Wed | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-26 | Thu | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-27 | Fri | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-28 | Sat | 6 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-29 | Sun | 6 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-11-30 | Mon | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-12-01 | Tue | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-12-02 | Wed | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-12-03 | Thu | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-12-04 | Fri | 4 h | DBMS, Operating Systems, Discrete Maths | -\n- 2026-12-05 | Sat | 3 h | Operating Systems, Discrete Maths | Exam today: DBMS (half day available)\n- 2026-12-06 | Sun | 6 h | Operating Systems, Discrete Maths | -\n- 2026-12-07 | Mon | 4 h | Operating Systems, Discrete Maths | -\n- 2026-12-08 | Tue | 2 h | Discrete Maths | Exam today: Operating Systems (half day available)\n- 2026-12-09 | Wed | 4 h | Discrete Maths | -\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This study plan prioritizes DBMS due to its upcoming exam on Dec 5 and hard difficulty rating, while consistently integrating Operating Systems and Discrete Maths. Dedicated full-day revision blocks are scheduled on the day immediately preceding each exam, ensuring total hours exactly match target allocations while adhering strictly to availability constraints.\",\n  \"warnings\": [],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"ER model concepts and entities\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"Normalization basics (1NF, 2NF, 3NF)\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Operating Systems\", \"activity\": \"Study\", \"topic\": \"CPU Scheduling fundamentals\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"BCNF and advanced Normalization\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"SQL joins and query syntax\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Scheduling algorithms numericals\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"Advanced SQL joins and subqueries\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"ER diagram design exercises\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Discrete Maths\", \"activity\": \"Study\", \"topic\": \"Sets operations and Venn diagrams\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"Transactions and ACID properties\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Normalization problem solving\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Discrete Maths\", \"activity\": \"Study\", \"topic\": \"Relations and Equivalence relations\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:00\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"Concurrency control and locking\"},\n        {\"start\": \"18:00\", \"end\": \"18:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:15\", \"end\": \"19:15\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"SQL join query writing\"},\n        {\"start\": \"19:15\", \"end\": \"19:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"19:30\", \"end\": \"20:30\", \"subject\": \"Operating Systems\", \"activity\": \"Study\", \"topic\": \"Deadlocks detection and prevention\"},\n        {\"start\": \"20:30\", \"end\": \"20:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:45\", \"end\": \"21:45\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Banker's Algorithm problems\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Study\", \"topic\": \"Serializability and Recoverability\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Transactions and SQL practice\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"22:00\", \"subject\": \"Operating Systems\", \"activity\": \"Study\", \"topic\": \"Paging and Virtual Memory\"},\n        {\"start\": \"22:00\", \"end\": \"22:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"22:15\", \"end\": \"23:45\", \"subject\": \"Discrete Maths\", \"activity\": \"Study\", \"topic\": \"Graph basics and representations\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Comprehensive Normalization & ER problems\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Complex SQL joins & transaction questions\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"22:00\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Paging and page replacement numericals\"},\n        {\"start\": \"22:00\", \"end\": \"22:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"22:15\", \"end\": \"23:45\", \"subject\": \"Discrete Maths\", \"activity\": \"Practice\", \"topic\": \"Relations and Graph theory problems\"}\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"ER model and SQL past exam questions\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"Quick review of Transactions\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Operating Systems\", \"activity\": \"Study\", \"topic\": \"Segmentation and Page tables\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Advanced Normalization practice set\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"ER diagrams and Relational Algebra\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Discrete Maths\", \"activity\": \"Practice\", \"topic\": \"Graph theory and Trees problem solving\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Practice\", \"topic\": \"Full-length DBMS mock problems\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"SQL syntax and key definitions\"},\n        {\"start\": \"19:45\", \"end\": \"20:00\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:00\", \"end\": \"21:30\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Deadlock & Scheduling mixed problems\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-03\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:00\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"Transactions & Concurrency review\"},\n        {\"start\": \"18:00\", \"end\": \"18:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:15\", \"end\": \"19:15\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"ER Models & Normalization review\"},\n        {\"start\": \"19:15\", \"end\": \"19:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"19:30\", \"end\": \"20:30\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Paging & Virtual Memory practice\"},\n        {\"start\": \"20:30\", \"end\": \"20:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:45\", \"end\": \"21:45\", \"subject\": \"Discrete Maths\", \"activity\": \"Practice\", \"topic\": \"Sets, Relations & Graphs review\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-04\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"Final review of ER Model & Normalization\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"Final review of SQL Joins & Transactions\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"DBMS\", \"activity\": \"Revision\", \"topic\": \"Formulae, definitions, and cheat-sheet summary\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-05\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Operating Systems\", \"activity\": \"Study\", \"topic\": \"Process Synchronization & Semaphores\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"CPU Scheduling & Deadlocks practice\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-06\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Paging & Thrashing numericals\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Operating Systems\", \"activity\": \"Practice\", \"topic\": \"Comprehensive OS past papers\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"22:00\", \"subject\": \"Operating Systems\", \"activity\": \"Revision\", \"topic\": \"Scheduling & Deadlocks key concepts\"},\n        {\"start\": \"22:00\", \"end\": \"22:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"22:15\", \"end\": \"23:45\", \"subject\": \"Discrete Maths\", \"activity\": \"Study\", \"topic\": \"Advanced Graph topics (Euler & Hamilton paths)\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-07\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Operating Systems\", \"activity\": \"Revision\", \"topic\": \"Final review of Scheduling & Deadlocks\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Operating Systems\", \"activity\": \"Revision\", \"topic\": \"Final review of Paging & Memory Management\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Operating Systems\", \"activity\": \"Revision\", \"topic\": \"Key formulas, definitions, and summary notes\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-08\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:00\", \"subject\": \"Discrete Maths\", \"activity\": \"Practice\", \"topic\": \"Sets & Relations problem solving\"},\n        {\"start\": \"18:00\", \"end\": \"18:15\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:15\", \"end\": \"19:15\", \"subject\": \"Discrete Maths\", \"activity\": \"Practice\", \"topic\": \"Graph theory proofs and practice\"}\n      ]\n    },\n    {\n      \"date\": \"2026-12-09\",\n      \"sessions\": [\n        {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Discrete Maths\", \"activity\": \"Revision\", \"topic\": \"Final review of Sets & Relations\"},\n        {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"18:45\", \"end\": \"20:15\", \"subject\": \"Discrete Maths\", \"activity\": \"Revision\", \"topic\": \"Final review of Graph basics\"},\n        {\"start\": \"20:15\", \"end\": \"20:30\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n        {\"start\": \"20:30\", \"end\": \"21:30\", \"subject\": \"Discrete Maths\", \"activity\": \"Revision\", \"topic\": \"Past papers and theorem summary\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\"subject\": \"DBMS\", \"planned_hours\": 31.5},\n    {\"subject\": \"Operating Systems\", \"planned_hours\": 23.5},\n    {\"subject\": \"Discrete Maths\", \"planned_hours\": 16.0}\n  ],\n  \"tips\": [\n    \"Prioritize SQL query writing and Normalization steps for DBMS during early practice sessions.\",\n    \"Solve numerical problems for Operating Systems (Banker's Algorithm and Page Replacement) on paper to build speed.\",\n    \"Take full advantage of 15-minute breaks to stay refreshed during intense evening sessions.\"\n  ]\n}",
+  "plan": {
+    "summary": "This study plan prioritizes DBMS due to its upcoming exam on Dec 5 and hard difficulty rating, while consistently integrating Operating Systems and Discrete Maths. Dedicated full-day revision blocks are scheduled on the day immediately preceding each exam, ensuring total hours exactly match target allocations while adhering strictly to availability constraints.",
+    "warnings": [],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "ER model concepts and entities"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "Normalization basics (1NF, 2NF, 3NF)"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Operating Systems",
+            "activity": "Study",
+            "topic": "CPU Scheduling fundamentals"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "BCNF and advanced Normalization"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "SQL joins and query syntax"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Scheduling algorithms numericals"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "Advanced SQL joins and subqueries"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "ER diagram design exercises"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Discrete Maths",
+            "activity": "Study",
+            "topic": "Sets operations and Venn diagrams"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "Transactions and ACID properties"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Normalization problem solving"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Discrete Maths",
+            "activity": "Study",
+            "topic": "Relations and Equivalence relations"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:00",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "Concurrency control and locking"
+          },
+          {
+            "start": "18:00",
+            "end": "18:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:15",
+            "end": "19:15",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "SQL join query writing"
+          },
+          {
+            "start": "19:15",
+            "end": "19:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "19:30",
+            "end": "20:30",
+            "subject": "Operating Systems",
+            "activity": "Study",
+            "topic": "Deadlocks detection and prevention"
+          },
+          {
+            "start": "20:30",
+            "end": "20:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:45",
+            "end": "21:45",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Banker's Algorithm problems"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Study",
+            "topic": "Serializability and Recoverability"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Transactions and SQL practice"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "22:00",
+            "subject": "Operating Systems",
+            "activity": "Study",
+            "topic": "Paging and Virtual Memory"
+          },
+          {
+            "start": "22:00",
+            "end": "22:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "22:15",
+            "end": "23:45",
+            "subject": "Discrete Maths",
+            "activity": "Study",
+            "topic": "Graph basics and representations"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Comprehensive Normalization & ER problems"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Complex SQL joins & transaction questions"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "22:00",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Paging and page replacement numericals"
+          },
+          {
+            "start": "22:00",
+            "end": "22:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "22:15",
+            "end": "23:45",
+            "subject": "Discrete Maths",
+            "activity": "Practice",
+            "topic": "Relations and Graph theory problems"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "ER model and SQL past exam questions"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "Quick review of Transactions"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Operating Systems",
+            "activity": "Study",
+            "topic": "Segmentation and Page tables"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Advanced Normalization practice set"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "ER diagrams and Relational Algebra"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Discrete Maths",
+            "activity": "Practice",
+            "topic": "Graph theory and Trees problem solving"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Practice",
+            "topic": "Full-length DBMS mock problems"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "19:45",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "SQL syntax and key definitions"
+          },
+          {
+            "start": "19:45",
+            "end": "20:00",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:00",
+            "end": "21:30",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Deadlock & Scheduling mixed problems"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-03",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:00",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "Transactions & Concurrency review"
+          },
+          {
+            "start": "18:00",
+            "end": "18:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:15",
+            "end": "19:15",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "ER Models & Normalization review"
+          },
+          {
+            "start": "19:15",
+            "end": "19:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "19:30",
+            "end": "20:30",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Paging & Virtual Memory practice"
+          },
+          {
+            "start": "20:30",
+            "end": "20:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:45",
+            "end": "21:45",
+            "subject": "Discrete Maths",
+            "activity": "Practice",
+            "topic": "Sets, Relations & Graphs review"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-04",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "Final review of ER Model & Normalization"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "Final review of SQL Joins & Transactions"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "DBMS",
+            "activity": "Revision",
+            "topic": "Formulae, definitions, and cheat-sheet summary"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-05",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Operating Systems",
+            "activity": "Study",
+            "topic": "Process Synchronization & Semaphores"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "CPU Scheduling & Deadlocks practice"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-06",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Paging & Thrashing numericals"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Operating Systems",
+            "activity": "Practice",
+            "topic": "Comprehensive OS past papers"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "22:00",
+            "subject": "Operating Systems",
+            "activity": "Revision",
+            "topic": "Scheduling & Deadlocks key concepts"
+          },
+          {
+            "start": "22:00",
+            "end": "22:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "22:15",
+            "end": "23:45",
+            "subject": "Discrete Maths",
+            "activity": "Study",
+            "topic": "Advanced Graph topics (Euler & Hamilton paths)"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-07",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Operating Systems",
+            "activity": "Revision",
+            "topic": "Final review of Scheduling & Deadlocks"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Operating Systems",
+            "activity": "Revision",
+            "topic": "Final review of Paging & Memory Management"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Operating Systems",
+            "activity": "Revision",
+            "topic": "Key formulas, definitions, and summary notes"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-08",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:00",
+            "subject": "Discrete Maths",
+            "activity": "Practice",
+            "topic": "Sets & Relations problem solving"
+          },
+          {
+            "start": "18:00",
+            "end": "18:15",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:15",
+            "end": "19:15",
+            "subject": "Discrete Maths",
+            "activity": "Practice",
+            "topic": "Graph theory proofs and practice"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-09",
+        "sessions": [
+          {
+            "start": "17:00",
+            "end": "18:30",
+            "subject": "Discrete Maths",
+            "activity": "Revision",
+            "topic": "Final review of Sets & Relations"
+          },
+          {
+            "start": "18:30",
+            "end": "18:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "18:45",
+            "end": "20:15",
+            "subject": "Discrete Maths",
+            "activity": "Revision",
+            "topic": "Final review of Graph basics"
+          },
+          {
+            "start": "20:15",
+            "end": "20:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "20:30",
+            "end": "21:30",
+            "subject": "Discrete Maths",
+            "activity": "Revision",
+            "topic": "Past papers and theorem summary"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "DBMS",
+        "planned_hours": 31.5
+      },
+      {
+        "subject": "Operating Systems",
+        "planned_hours": 23.5
+      },
+      {
+        "subject": "Discrete Maths",
+        "planned_hours": 16.0
+      }
+    ],
+    "tips": [
+      "Prioritize SQL query writing and Normalization steps for DBMS during early practice sessions.",
+      "Solve numerical problems for Operating Systems (Banker's Algorithm and Page Replacement) on paper to build speed.",
+      "Take full advantage of 15-minute breaks to stay refreshed during intense evening sessions."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "DBMS": 31.5,
+      "Operating Systems": 23.5,
+      "Discrete Maths": 16.0
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 6.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 6.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": "Thu",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": "Fri",
+      "hours": 4.0,
+      "allowed": [
+        "DBMS",
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": "Sat",
+      "hours": 3.0,
+      "allowed": [
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": "Exam today: DBMS (half day available)"
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": "Sun",
+      "hours": 6.0,
+      "allowed": [
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-07",
+      "weekday": "Mon",
+      "hours": 4.0,
+      "allowed": [
+        "Operating Systems",
+        "Discrete Maths"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-08",
+      "weekday": "Tue",
+      "hours": 2.0,
+      "allowed": [
+        "Discrete Maths"
+      ],
+      "note": "Exam today: Operating Systems (half day available)"
+    },
+    {
+      "date": "2026-12-09",
+      "weekday": "Wed",
+      "hours": 4.0,
+      "allowed": [
+        "Discrete Maths"
+      ],
+      "note": ""
+    }
+  ],
+  "targets": {
+    "DBMS": 31.5,
+    "Operating Systems": 23.5,
+    "Discrete Maths": 16.0
+  },
+  "temperature": 0.3
+}

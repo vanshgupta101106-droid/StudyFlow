@@ -1,0 +1,14 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "rejected",
+  "errors": [
+    "DBMS: exam date 2026-11-10 has already passed."
+  ],
+  "warnings": [],
+  "system": "",
+  "user": "",
+  "raw": "",
+  "plan": null,
+  "check": null
+}

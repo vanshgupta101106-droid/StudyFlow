@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 from datetime import date, timedelta
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -34,16 +35,48 @@ with st.sidebar:
                               help="Use v1/v2 to compare older prompt versions with the final prompt.")
     show_prompt = st.checkbox("Show the prompt sent to the model", value=False)
 
+    # Load one of the saved test cases (test-data/inputs) into the form, so evaluators can re-run them.
+    st.divider()
+    TEST_DIR = Path(__file__).resolve().parents[2] / "test-data" / "inputs"
+    tests = {}
+    for f in sorted(TEST_DIR.glob("T*.json")):
+        t = json.loads(f.read_text(encoding="utf-8"))
+        if min(t["weekday_hours"], t["weekend_hours"]) >= 0:  # T11 (negative hours) cannot be typed into the form
+            tests[t["id"]] = t
+    pick = st.selectbox("Load a test case", ["(none)"] + list(tests),
+                        format_func=lambda k: k if k == "(none)" else f"{k} – {tests[k]['title']}")
+    if st.button("Load into form", disabled=pick == "(none)"):
+        t = tests[pick]
+        st.session_state.start_date = max(date.fromisoformat(t["start_date"]), date.today())
+        st.session_state.weekday_hours = float(t["weekday_hours"])
+        st.session_state.weekend_hours = float(t["weekend_hours"])
+        st.session_state.slot = t["preferred_slot"]
+        st.session_state.notes = t.get("notes", "")
+        st.session_state.subjects_df = pd.DataFrame(
+            [{"Subject": x["name"], "Exam date": date.fromisoformat(x["exam_date"]),
+              "Difficulty": x["difficulty"], "Topics": x.get("topics", "")} for x in t["subjects"]],
+            columns=["Subject", "Exam date", "Difficulty", "Topics"])
+        st.session_state.pop("subjects_editor", None)
+        st.session_state.pop("result", None)
+        st.session_state.loaded_test = pick
+        st.rerun()
+    if st.session_state.get("loaded_test"):
+        st.caption(f"Loaded test case {st.session_state.loaded_test}.")
+
 st.title("📅 StudyFlow")
 st.caption("Personalised, constraint-aware study timetables from your subjects, exam dates, difficulty and free hours.")
 
 # ---------------------------------------------------------------- input module
 today = date.today()
+st.session_state.setdefault("start_date", today)
+st.session_state.setdefault("weekday_hours", 4.0)
+st.session_state.setdefault("weekend_hours", 6.0)
+st.session_state.setdefault("slot", "Evening")
 c1, c2, c3, c4 = st.columns(4)
-start_date = c1.date_input("Start date", value=today, min_value=today)
-weekday_hours = c2.number_input("Study hours on weekdays", min_value=0.0, max_value=14.0, value=4.0, step=0.5)
-weekend_hours = c3.number_input("Study hours on weekends", min_value=0.0, max_value=14.0, value=6.0, step=0.5)
-slot = c4.selectbox("Preferred study time", list(SLOT_START), index=2)
+start_date = c1.date_input("Start date", min_value=today, key="start_date")
+weekday_hours = c2.number_input("Study hours on weekdays", min_value=0.0, max_value=14.0, step=0.5, key="weekday_hours")
+weekend_hours = c3.number_input("Study hours on weekends", min_value=0.0, max_value=14.0, step=0.5, key="weekend_hours")
+slot = c4.selectbox("Preferred study time", list(SLOT_START), key="slot")
 
 st.subheader("Subjects")
 if "subjects_df" not in st.session_state:
@@ -66,7 +99,7 @@ subjects_df = st.data_editor(
     },
     key="subjects_editor",
 )
-notes = st.text_input("Extra preferences (optional)", placeholder="e.g. I prefer Maths practice on weekends")
+notes = st.text_input("Extra preferences (optional)", placeholder="e.g. I prefer Maths practice on weekends", key="notes")
 
 
 def collect_inputs(blocked_dates=None) -> dict:
@@ -121,6 +154,10 @@ def show_result(res: dict):
 
     plan, check = res["plan"], res["check"]
     st.success(plan.get("summary", "Plan generated."))
+    if res.get("model") and res["model"] != model:
+        st.caption(f"Generated with fallback model `{res['model']}` because `{model}` was out of quota or busy.")
+    else:
+        st.caption(f"Generated with `{res.get('model', model)}`.")
     for w in plan.get("warnings") or []:
         st.warning(f"AI note: {w}")
 
@@ -135,7 +172,7 @@ def show_result(res: dict):
                 st.markdown(f"- {v}")
         st.markdown("#### Hours per subject")
         totals = pd.DataFrame({"Planned (checked)": check["subject_hours"], "Target": res["targets"]})
-        st.bar_chart(totals)
+        st.bar_chart(totals, stack=False)
         if plan.get("tips"):
             st.markdown("#### Tips")
             for t in plan["tips"]:

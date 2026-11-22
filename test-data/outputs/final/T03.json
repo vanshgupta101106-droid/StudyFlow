@@ -1,0 +1,656 @@
+{
+  "prompt_key": "P1",
+  "model": "gemini-3.6-flash",
+  "status": "ok",
+  "errors": [],
+  "warnings": [
+    "2 exams on the same day (2026-12-06): Compiler Design, Ethics."
+  ],
+  "system": "You are StudyFlow, an expert academic study planner. You build realistic, constraint-aware, day-wise study timetables for college students preparing for exams.\n\nFollow these rules strictly:\n\nHARD CONSTRAINTS (never break these)\n1. Plan only on the dates listed in the AVAILABILITY CALENDAR, and only for the subjects listed as allowed on that date. A subject must never be scheduled on or after its own exam date.\n2. The total of Study + Practice + Revision time on a date must not exceed that date's available hours. Breaks do not count as study time.\n3. Sessions on the same date must not overlap. Use 24-hour HH:MM times between 05:00 and 23:59.\n4. Every subject must appear in the plan, and every subject must have at least one Revision session, ideally on the last available date before its exam.\n\nSOFT GOALS (follow unless they conflict with a hard constraint)\n5. Give each subject roughly its TARGET HOURS. Hard subjects get more time than Easy ones; subjects with closer exams get attention earlier.\n6. Start sessions at the student's preferred slot start time. If the day's hours do not fit before 23:59, start earlier.\n7. Study sessions should be 45-90 minutes. Put a 10-15 minute Break between consecutive study sessions.\n8. Use the student's topics when given; split them across sessions in a sensible order (fundamentals first, then problems/practice, then revision). If no topics are given, write a reasonable generic topic.\n9. Mix in Practice sessions (past papers, problem solving) for Medium and Hard subjects.\n\nIf the inputs make a good plan impossible (for example very few hours), still produce the best possible plan and explain the problem in \"warnings\".\n\nOUTPUT FORMAT\nReturn ONLY one valid JSON object, no markdown fences, no extra text, matching this schema:\n{\n  \"summary\": \"2-3 sentence overview of the strategy\",\n  \"warnings\": [\"string\", ...],\n  \"days\": [\n    {\n      \"date\": \"YYYY-MM-DD\",\n      \"sessions\": [\n        {\"start\": \"HH:MM\", \"end\": \"HH:MM\", \"subject\": \"exact subject name or 'Break'\", \"activity\": \"Study | Practice | Revision | Break\", \"topic\": \"short description\"}\n      ]\n    }\n  ],\n  \"subject_totals\": [{\"subject\": \"name\", \"planned_hours\": number}],\n  \"tips\": [\"string\", ...]\n}\nInclude every calendar date in \"days\" (use an empty \"sessions\" list if the date has 0 available hours).",
+  "user": "Create a study plan for this student.\n\nSTART DATE: 2026-11-23\nPREFERRED SLOT: Afternoon (start at 13:00)\nEXTRA PREFERENCES: none\n\nSUBJECTS (name | exam date | difficulty | topics | target hours)\n- Compiler Design | 2026-12-06 | Hard | Lexical analysis, Parsing, Syntax-directed translation | ~24 h\n- Ethics | 2026-12-06 | Easy | not specified | ~12 h\n- Environmental Science | 2026-12-07 | Easy | not specified | ~12 h\n\nAVAILABILITY CALENDAR (date | weekday | available study hours | subjects allowed that day | note)\n- 2026-11-23 | Mon | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-24 | Tue | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-25 | Wed | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-26 | Thu | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-27 | Fri | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-28 | Sat | 5 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-29 | Sun | 5 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-11-30 | Mon | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-01 | Tue | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-02 | Wed | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-03 | Thu | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-04 | Fri | 3 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-05 | Sat | 5 h | Compiler Design, Ethics, Environmental Science | -\n- 2026-12-06 | Sun | 2.5 h | Environmental Science | Exam today: Compiler Design, Ethics (half day available)\n\nEXAMPLE of one correctly formatted day (format only - do not copy the content):\n{\"date\": \"2026-01-05\", \"sessions\": [\n  {\"start\": \"17:00\", \"end\": \"18:30\", \"subject\": \"Physics\", \"activity\": \"Study\", \"topic\": \"Kinematics - equations of motion\"},\n  {\"start\": \"18:30\", \"end\": \"18:45\", \"subject\": \"Break\", \"activity\": \"Break\", \"topic\": \"Short break\"},\n  {\"start\": \"18:45\", \"end\": \"19:45\", \"subject\": \"Chemistry\", \"activity\": \"Practice\", \"topic\": \"Mole concept numericals\"}\n]}\n\nReturn the JSON object now.",
+  "raw": "{\n  \"summary\": \"This plan prioritizes Compiler Design due to its high difficulty, while allocating balanced time for Ethics and Environmental Science. Daily study blocks start at the preferred 13:00 slot with built-in rest breaks. Final revision sessions are strategically placed on the day prior to each subject's exam.\",\n  \"warnings\": [\n    \"Total available time (47.5 hours) is slightly below the combined target of 48 hours. Time has been allocated as 23.5h for Compiler Design, 11h for Ethics, and 13h for Environmental Science to ensure thorough exam preparation.\"\n  ],\n  \"days\": [\n    {\n      \"date\": \"2026-11-23\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Lexical analysis - Introduction & finite automata\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Introduction to Moral Philosophy and Ethics\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-24\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Lexical analysis - Regular expressions to DFA conversion\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Ecosystems, Food Webs, and Biodiversity\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-25\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Lexical analysis - Problem solving & DFA minimization\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Professional Ethics and Code of Conduct\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-26\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Parsing - Context-free grammars & Top-down parsing\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Environmental Pollution and Control Technologies\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-27\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Parsing - LL(1) parsers and parsing table construction\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Ethical Dilemmas and Decision-Making Frameworks\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-28\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Parsing - Bottom-up parsing, LR(0) and SLR(1) items\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Parsing - LL(1) and SLR(1) numerical problems\"\n        },\n        {\n          \"start\": \"16:15\",\n          \"end\": \"16:30\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"16:30\",\n          \"end\": \"17:30\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Case studies in Professional and Workplace Ethics\"\n        },\n        {\n          \"start\": \"17:30\",\n          \"end\": \"17:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"17:45\",\n          \"end\": \"18:45\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Natural Resources and Sustainable Development\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-29\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Parsing - CLR(1) and LALR(1) parsers\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Syntax-directed translation - Syntax trees & SDD\"\n        },\n        {\n          \"start\": \"16:15\",\n          \"end\": \"16:30\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"16:30\",\n          \"end\": \"17:30\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Corporate Governance and Social Responsibility\"\n        },\n        {\n          \"start\": \"17:30\",\n          \"end\": \"17:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"17:45\",\n          \"end\": \"18:45\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Environmental Laws and International Agreements\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-11-30\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Syntax-directed translation - Intermediate code generation\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Climate Change, Global Warming, and Ozone Depletion\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-01\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Syntax-directed translation - Three-address code problems\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Study\",\n          \"topic\": \"Human Values and Moral Reasoning in Contemporary Society\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-02\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Study\",\n          \"topic\": \"Code Optimization techniques and Run-time environments\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Disaster Management and Conservation Strategies\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-03\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Comprehensive Compiler Design past paper practice\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Ethics case study practice and answer structuring\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-04\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Advanced Parsing & SDT numericals review\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Environmental Science previous year questions review\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-05\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Final rapid revision - Lexical analysis, Parsing & SDT\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"14:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:45\",\n          \"end\": \"16:15\",\n          \"subject\": \"Ethics\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Final rapid revision - Moral theories and key case studies\"\n        },\n        {\n          \"start\": \"16:15\",\n          \"end\": \"16:30\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"16:30\",\n          \"end\": \"17:30\",\n          \"subject\": \"Compiler Design\",\n          \"activity\": \"Practice\",\n          \"topic\": \"Formula and parsing table construction speed drill\"\n        },\n        {\n          \"start\": \"17:30\",\n          \"end\": \"17:45\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"17:45\",\n          \"end\": \"18:45\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Study\",\n          \"topic\": \"Waste Management and Renewable Energy Systems\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-12-06\",\n      \"sessions\": [\n        {\n          \"start\": \"13:00\",\n          \"end\": \"14:15\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Comprehensive revision of Environmental Science core concepts\"\n        },\n        {\n          \"start\": \"14:15\",\n          \"end\": \"14:30\",\n          \"subject\": \"Break\",\n          \"activity\": \"Break\",\n          \"topic\": \"Short break\"\n        },\n        {\n          \"start\": \"14:30\",\n          \"end\": \"15:45\",\n          \"subject\": \"Environmental Science\",\n          \"activity\": \"Revision\",\n          \"topic\": \"Final review of Environmental laws, definitions, and diagrams\"\n        }\n      ]\n    }\n  ],\n  \"subject_totals\": [\n    {\n      \"subject\": \"Compiler Design\",\n      \"planned_hours\": 23.5\n    },\n    {\n      \"subject\": \"Ethics\",\n      \"planned_hours\": 11\n    },\n    {\n      \"subject\": \"Environmental Science\",\n      \"planned_hours\": 13\n    }\n  ],\n  \"tips\": [\n    \"Focus extra practice on parsing table construction for Compiler Design, as LR and LL parsers are frequent exam topics.\",\n    \"For Ethics, practice writing structured answers for scenario-based case studies.\",\n    \"Use memory aids or flashcards for Environmental Science to memorize specific environmental acts, years, and protocol names.\"\n  ]\n}",
+  "plan": {
+    "summary": "This plan prioritizes Compiler Design due to its high difficulty, while allocating balanced time for Ethics and Environmental Science. Daily study blocks start at the preferred 13:00 slot with built-in rest breaks. Final revision sessions are strategically placed on the day prior to each subject's exam.",
+    "warnings": [
+      "Total available time (47.5 hours) is slightly below the combined target of 48 hours. Time has been allocated as 23.5h for Compiler Design, 11h for Ethics, and 13h for Environmental Science to ensure thorough exam preparation."
+    ],
+    "days": [
+      {
+        "date": "2026-11-23",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Lexical analysis - Introduction & finite automata"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Study",
+            "topic": "Introduction to Moral Philosophy and Ethics"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-24",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Lexical analysis - Regular expressions to DFA conversion"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Ecosystems, Food Webs, and Biodiversity"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-25",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Lexical analysis - Problem solving & DFA minimization"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Study",
+            "topic": "Professional Ethics and Code of Conduct"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-26",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Parsing - Context-free grammars & Top-down parsing"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Environmental Pollution and Control Technologies"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-27",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Parsing - LL(1) parsers and parsing table construction"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Study",
+            "topic": "Ethical Dilemmas and Decision-Making Frameworks"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-28",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Parsing - Bottom-up parsing, LR(0) and SLR(1) items"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Parsing - LL(1) and SLR(1) numerical problems"
+          },
+          {
+            "start": "16:15",
+            "end": "16:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "16:30",
+            "end": "17:30",
+            "subject": "Ethics",
+            "activity": "Practice",
+            "topic": "Case studies in Professional and Workplace Ethics"
+          },
+          {
+            "start": "17:30",
+            "end": "17:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "17:45",
+            "end": "18:45",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Natural Resources and Sustainable Development"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-29",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Parsing - CLR(1) and LALR(1) parsers"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Syntax-directed translation - Syntax trees & SDD"
+          },
+          {
+            "start": "16:15",
+            "end": "16:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "16:30",
+            "end": "17:30",
+            "subject": "Ethics",
+            "activity": "Study",
+            "topic": "Corporate Governance and Social Responsibility"
+          },
+          {
+            "start": "17:30",
+            "end": "17:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "17:45",
+            "end": "18:45",
+            "subject": "Environmental Science",
+            "activity": "Practice",
+            "topic": "Environmental Laws and International Agreements"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-30",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Syntax-directed translation - Intermediate code generation"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Climate Change, Global Warming, and Ozone Depletion"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-01",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Syntax-directed translation - Three-address code problems"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Study",
+            "topic": "Human Values and Moral Reasoning in Contemporary Society"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-02",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Study",
+            "topic": "Code Optimization techniques and Run-time environments"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Disaster Management and Conservation Strategies"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-03",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Comprehensive Compiler Design past paper practice"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Practice",
+            "topic": "Ethics case study practice and answer structuring"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-04",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Advanced Parsing & SDT numericals review"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Environmental Science",
+            "activity": "Practice",
+            "topic": "Environmental Science previous year questions review"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-05",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:30",
+            "subject": "Compiler Design",
+            "activity": "Revision",
+            "topic": "Final rapid revision - Lexical analysis, Parsing & SDT"
+          },
+          {
+            "start": "14:30",
+            "end": "14:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:45",
+            "end": "16:15",
+            "subject": "Ethics",
+            "activity": "Revision",
+            "topic": "Final rapid revision - Moral theories and key case studies"
+          },
+          {
+            "start": "16:15",
+            "end": "16:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "16:30",
+            "end": "17:30",
+            "subject": "Compiler Design",
+            "activity": "Practice",
+            "topic": "Formula and parsing table construction speed drill"
+          },
+          {
+            "start": "17:30",
+            "end": "17:45",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "17:45",
+            "end": "18:45",
+            "subject": "Environmental Science",
+            "activity": "Study",
+            "topic": "Waste Management and Renewable Energy Systems"
+          }
+        ]
+      },
+      {
+        "date": "2026-12-06",
+        "sessions": [
+          {
+            "start": "13:00",
+            "end": "14:15",
+            "subject": "Environmental Science",
+            "activity": "Revision",
+            "topic": "Comprehensive revision of Environmental Science core concepts"
+          },
+          {
+            "start": "14:15",
+            "end": "14:30",
+            "subject": "Break",
+            "activity": "Break",
+            "topic": "Short break"
+          },
+          {
+            "start": "14:30",
+            "end": "15:45",
+            "subject": "Environmental Science",
+            "activity": "Revision",
+            "topic": "Final review of Environmental laws, definitions, and diagrams"
+          }
+        ]
+      }
+    ],
+    "subject_totals": [
+      {
+        "subject": "Compiler Design",
+        "planned_hours": 23.5
+      },
+      {
+        "subject": "Ethics",
+        "planned_hours": 11
+      },
+      {
+        "subject": "Environmental Science",
+        "planned_hours": 13
+      }
+    ],
+    "tips": [
+      "Focus extra practice on parsing table construction for Compiler Design, as LR and LL parsers are frequent exam topics.",
+      "For Ethics, practice writing structured answers for scenario-based case studies.",
+      "Use memory aids or flashcards for Environmental Science to memorize specific environmental acts, years, and protocol names."
+    ]
+  },
+  "check": {
+    "passed": true,
+    "violations": [],
+    "subject_hours": {
+      "Compiler Design": 23.5,
+      "Ethics": 11.0,
+      "Environmental Science": 13.0
+    }
+  },
+  "calendar": [
+    {
+      "date": "2026-11-23",
+      "weekday": "Mon",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": "Tue",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": "Wed",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": "Thu",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "Fri",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "Sat",
+      "hours": 5.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "Sun",
+      "hours": 5.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": "Mon",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": "Tue",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": "Wed",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": "Thu",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": "Fri",
+      "hours": 3.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": "Sat",
+      "hours": 5.0,
+      "allowed": [
+        "Compiler Design",
+        "Ethics",
+        "Environmental Science"
+      ],
+      "note": ""
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": "Sun",
+      "hours": 2.5,
+      "allowed": [
+        "Environmental Science"
+      ],
+      "note": "Exam today: Compiler Design, Ethics (half day available)"
+    }
+  ],
+  "targets": {
+    "Compiler Design": 24.0,
+    "Ethics": 12.0,
+    "Environmental Science": 12.0
+  },
+  "temperature": 0.3
+}
