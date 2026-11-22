@@ -1,0 +1,20 @@
+{
+  "id": "T11",
+  "type": "Invalid",
+  "title": "Negative study hours",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": -2,
+  "weekend_hours": 4,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "DBMS",
+      "exam_date": "2026-12-05",
+      "difficulty": "Hard",
+      "topics": ""
+    }
+  ],
+  "expected": "Rejected: negative hours; no AI call"
+}

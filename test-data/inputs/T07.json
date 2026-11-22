@@ -1,0 +1,37 @@
+{
+  "id": "T07",
+  "type": "Edge",
+  "title": "Two exams on the same day",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 5,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "Physics",
+      "exam_date": "2026-12-02",
+      "difficulty": "Medium",
+      "topics": ""
+    },
+    {
+      "name": "Chemistry",
+      "exam_date": "2026-12-02",
+      "difficulty": "Medium",
+      "topics": ""
+    },
+    {
+      "name": "Maths",
+      "exam_date": "2026-12-04",
+      "difficulty": "Hard",
+      "topics": ""
+    }
+  ],
+  "expected": "Same-day exam warning; Physics and Chemistry both revised before 12-02",
+  "checks": {
+    "warning_contains": [
+      "same day"
+    ]
+  }
+}

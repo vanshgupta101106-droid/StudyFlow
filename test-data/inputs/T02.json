@@ -1,0 +1,56 @@
+{
+  "id": "T02",
+  "type": "Normal",
+  "title": "5 subjects, limited study hours",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 2,
+  "weekend_hours": 3,
+  "preferred_slot": "Morning",
+  "subjects": [
+    {
+      "name": "Physics",
+      "exam_date": "2026-12-01",
+      "difficulty": "Hard",
+      "topics": ""
+    },
+    {
+      "name": "Chemistry",
+      "exam_date": "2026-12-03",
+      "difficulty": "Medium",
+      "topics": ""
+    },
+    {
+      "name": "Maths",
+      "exam_date": "2026-12-05",
+      "difficulty": "Hard",
+      "topics": ""
+    },
+    {
+      "name": "English",
+      "exam_date": "2026-12-07",
+      "difficulty": "Easy",
+      "topics": ""
+    },
+    {
+      "name": "Biology",
+      "exam_date": "2026-12-09",
+      "difficulty": "Medium",
+      "topics": ""
+    }
+  ],
+  "expected": "Within 2 h / 3 h per day; all revised; Physics and Maths get more hours than English",
+  "checks": {
+    "more_hours": [
+      [
+        "Physics",
+        "English"
+      ],
+      [
+        "Maths",
+        "English"
+      ]
+    ]
+  }
+}

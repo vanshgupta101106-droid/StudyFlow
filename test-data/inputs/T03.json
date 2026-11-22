@@ -1,0 +1,47 @@
+{
+  "id": "T03",
+  "type": "Normal",
+  "title": "1 difficult subject and 2 easy subjects",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 3,
+  "weekend_hours": 5,
+  "preferred_slot": "Afternoon",
+  "subjects": [
+    {
+      "name": "Compiler Design",
+      "exam_date": "2026-12-06",
+      "difficulty": "Hard",
+      "topics": "Lexical analysis, Parsing, Syntax-directed translation"
+    },
+    {
+      "name": "Ethics",
+      "exam_date": "2026-12-06",
+      "difficulty": "Easy",
+      "topics": ""
+    },
+    {
+      "name": "Environmental Science",
+      "exam_date": "2026-12-07",
+      "difficulty": "Easy",
+      "topics": ""
+    }
+  ],
+  "expected": "Compiler Design gets more hours than each easy subject; same-day exam warning",
+  "checks": {
+    "more_hours": [
+      [
+        "Compiler Design",
+        "Ethics"
+      ],
+      [
+        "Compiler Design",
+        "Environmental Science"
+      ]
+    ],
+    "warning_contains": [
+      "same day"
+    ]
+  }
+}

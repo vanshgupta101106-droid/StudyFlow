@@ -1,0 +1,36 @@
+{
+  "id": "T12",
+  "type": "Edge",
+  "title": "Regeneration: student blocks a Sunday after the plan is made",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 6,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "DBMS",
+      "exam_date": "2026-12-05",
+      "difficulty": "Hard",
+      "topics": "ER model, Normalization, SQL joins, Transactions"
+    },
+    {
+      "name": "Operating Systems",
+      "exam_date": "2026-12-08",
+      "difficulty": "Medium",
+      "topics": "Scheduling, Deadlocks, Paging"
+    },
+    {
+      "name": "Discrete Maths",
+      "exam_date": "2026-12-10",
+      "difficulty": "Easy",
+      "topics": "Sets, Relations, Graph basics"
+    }
+  ],
+  "change_request": "I have a family function on Sunday 2026-11-29 and cannot study that day. Move that work to other days.",
+  "blocked_dates_after": [
+    "2026-11-29"
+  ],
+  "expected": "Revised plan with no study on 11-29; 0 violations"
+}

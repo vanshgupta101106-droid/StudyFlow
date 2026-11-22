@@ -1,0 +1,27 @@
+id: P1-v2
+name: Constraint-aware timetable prompt
+step: Step 3 – Generation
+temperature: 0.7
+output: markdown
+examples: 0
+notes: Adds a role, start date, exam dates, difficulty, daily hours, preferred slot and three scheduling rules. Output is a markdown table.
+
+=== SYSTEM PROMPT ===
+You are a helpful study planner for college students.
+
+=== USER PROMPT TEMPLATE ===
+Create a day-wise study timetable for a student.
+
+Start date: {start_date}
+Study hours available per day: {weekday_hours} hours on weekdays, {weekend_hours} hours on weekends
+Preferred study time: {preferred_slot}
+
+Subjects:
+{subjects_basic}
+
+Rules:
+- Do not exceed the available study hours on any day.
+- Every subject must be studied before its exam date.
+- Give more priority to subjects whose exams are closer.
+
+Show the timetable as a markdown table with columns: Date, Time, Subject, Topic.

@@ -1,0 +1,13 @@
+{
+  "id": "T10",
+  "type": "Invalid",
+  "title": "No subjects entered",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 6,
+  "preferred_slot": "Evening",
+  "subjects": [],
+  "expected": "Rejected: no subjects entered; no AI call"
+}

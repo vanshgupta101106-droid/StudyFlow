@@ -1,0 +1,20 @@
+{
+  "id": "T08",
+  "type": "Edge",
+  "title": "Exam tomorrow (only one study day)",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 6,
+  "weekend_hours": 6,
+  "preferred_slot": "Morning",
+  "subjects": [
+    {
+      "name": "Economics",
+      "exam_date": "2026-11-24",
+      "difficulty": "Medium",
+      "topics": "Demand and supply, Elasticity"
+    }
+  ],
+  "expected": "One-day plan (at most 6 h) that includes revision"
+}

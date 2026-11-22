@@ -1,0 +1,13 @@
+id: P1-v1
+name: Baseline timetable prompt
+step: Step 3 – Generation (baseline)
+temperature: 1.0
+output: markdown
+examples: 0
+notes: Zero-shot, no role, no constraints. Only subject names are passed. Saved as the baseline for comparison.
+
+=== SYSTEM PROMPT ===
+none
+
+=== USER PROMPT TEMPLATE ===
+Make a study timetable for me. My subjects are: {subject_names}. My exams are coming soon. Please create a study plan.

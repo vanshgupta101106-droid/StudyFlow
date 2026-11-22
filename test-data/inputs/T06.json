@@ -1,0 +1,38 @@
+{
+  "id": "T06",
+  "type": "Edge",
+  "title": "Only 1 hour per day",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 1,
+  "weekend_hours": 1,
+  "preferred_slot": "Night",
+  "subjects": [
+    {
+      "name": "DBMS",
+      "exam_date": "2026-11-30",
+      "difficulty": "Hard",
+      "topics": ""
+    },
+    {
+      "name": "Operating Systems",
+      "exam_date": "2026-12-01",
+      "difficulty": "Hard",
+      "topics": ""
+    },
+    {
+      "name": "Java",
+      "exam_date": "2026-12-02",
+      "difficulty": "Medium",
+      "topics": ""
+    }
+  ],
+  "expected": "Low-time + insufficient-time warnings; at most 1 h/day; every subject revised",
+  "checks": {
+    "warning_contains": [
+      "Very little",
+      "Insufficient"
+    ]
+  }
+}

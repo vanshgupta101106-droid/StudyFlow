@@ -1,0 +1,40 @@
+{
+  "id": "T04",
+  "type": "Normal",
+  "title": "Exams on consecutive days",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 6,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "Computer Networks",
+      "exam_date": "2026-12-01",
+      "difficulty": "Medium",
+      "topics": ""
+    },
+    {
+      "name": "Software Engineering",
+      "exam_date": "2026-12-02",
+      "difficulty": "Easy",
+      "topics": ""
+    },
+    {
+      "name": "Algorithms",
+      "exam_date": "2026-12-03",
+      "difficulty": "Hard",
+      "topics": ""
+    }
+  ],
+  "expected": "Revision the day before each exam; half day on exam days; Algorithms gets more hours than SE",
+  "checks": {
+    "more_hours": [
+      [
+        "Algorithms",
+        "Software Engineering"
+      ]
+    ]
+  }
+}

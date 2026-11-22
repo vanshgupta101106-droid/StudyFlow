@@ -1,0 +1,26 @@
+{
+  "id": "T05",
+  "type": "Normal",
+  "title": "Very different weekday vs weekend availability",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 1.5,
+  "weekend_hours": 8,
+  "preferred_slot": "Morning",
+  "subjects": [
+    {
+      "name": "Machine Learning",
+      "exam_date": "2026-12-08",
+      "difficulty": "Hard",
+      "topics": ""
+    },
+    {
+      "name": "Statistics",
+      "exam_date": "2026-12-10",
+      "difficulty": "Medium",
+      "topics": ""
+    }
+  ],
+  "expected": "Weekdays at most 1.5 h, weekends carry the load; 0 violations"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "T01",
+  "type": "Normal",
+  "title": "3 subjects, different exam dates",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 6,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "DBMS",
+      "exam_date": "2026-12-05",
+      "difficulty": "Hard",
+      "topics": "ER model, Normalization, SQL joins, Transactions"
+    },
+    {
+      "name": "Operating Systems",
+      "exam_date": "2026-12-08",
+      "difficulty": "Medium",
+      "topics": "Scheduling, Deadlocks, Paging"
+    },
+    {
+      "name": "Discrete Maths",
+      "exam_date": "2026-12-10",
+      "difficulty": "Easy",
+      "topics": "Sets, Relations, Graph basics"
+    }
+  ],
+  "expected": "Valid plan, 0 violations; every subject revised; DBMS gets the most hours",
+  "checks": {
+    "more_hours": [
+      [
+        "DBMS",
+        "Discrete Maths"
+      ]
+    ]
+  }
+}

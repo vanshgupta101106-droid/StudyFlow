@@ -1,0 +1,20 @@
+{
+  "id": "T09",
+  "type": "Invalid",
+  "title": "Exam date already passed",
+  "today": "2026-11-23",
+  "start_date": "2026-11-23",
+  "notes": "",
+  "weekday_hours": 4,
+  "weekend_hours": 6,
+  "preferred_slot": "Evening",
+  "subjects": [
+    {
+      "name": "DBMS",
+      "exam_date": "2026-11-10",
+      "difficulty": "Hard",
+      "topics": ""
+    }
+  ],
+  "expected": "Rejected: exam date already passed; no AI call"
+}
