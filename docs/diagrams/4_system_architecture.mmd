@@ -1,0 +1,17 @@
+flowchart LR
+    U((Student / evaluator<br/>web browser)) <-->|HTTPS| UI
+    subgraph CLOUD[Streamlit Community Cloud]
+        UI[app.py<br/>Streamlit UI: input form,<br/>display, regeneration] --> PL[pipeline.py]
+        PL --> V[validation.py]
+        PL --> PN[planner.py]
+        PL --> PB[prompt_builder.py]
+        PB --> PR[(prompts/final<br/>P1_generate, P2_regenerate<br/>+ v1, v2, v3)]
+        PL --> L[llm.py]
+        PL --> C[checker.py]
+        S[(Streamlit secrets<br/>GEMINI_API_KEY)] -.-> L
+    end
+    L <-->|google-genai SDK| G[Google Gemini API<br/>gemini-2.5-flash]
+    subgraph OFF[Offline evaluation]
+        E[run_experiments.py] --> PL
+        E --> TD[(test-data<br/>inputs / outputs)]
+    end

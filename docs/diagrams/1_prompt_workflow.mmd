@@ -1,0 +1,13 @@
+flowchart TD
+    A[Student fills form<br/>subjects, exam dates, difficulty,<br/>weekday/weekend hours, slot] --> B{Input validation}
+    B -- errors --> X[Show errors<br/>no AI call]
+    B -- ok / warnings --> C[Planning context<br/>calendar of dates + hours<br/>allowed subjects per day<br/>target hours per subject]
+    C --> D[Fill prompt P1 template<br/>system rules + subjects table<br/>+ calendar table + 1 format example]
+    D --> E[Gemini 2.5 Flash<br/>temperature 0.3, JSON mode]
+    E --> F{Valid JSON?}
+    F -- no --> Y[Show raw output + error]
+    F -- yes --> G[Constraint checker<br/>hours, exam dates, overlaps,<br/>revision per subject]
+    G --> H[Timetable display<br/>day-wise tables, hours chart,<br/>violations, CSV/JSON download]
+    H --> I{Student's situation<br/>changed?}
+    I -- yes --> J[Fill prompt P2 template<br/>previous plan + change request<br/>+ updated calendar]
+    J --> E

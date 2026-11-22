@@ -1,0 +1,12 @@
+# never commit secrets
+.streamlit/secrets.toml
+.env
+*.key
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+# build intermediates
+docs/build/
