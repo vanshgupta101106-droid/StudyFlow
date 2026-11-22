@@ -4,8 +4,8 @@
 
 StudyFlow turns a student's subjects, exam dates, difficulty levels and free hours into a realistic, day-wise study timetable. It uses Google Gemini, and every generated plan is **checked automatically** against the student's constraints: daily hour limits, no study on or after a subject's exam, no overlapping sessions, and a revision session for every subject.
 
-- **Live app:** [FILL https://….streamlit.app]
-- **Demo reel:** [FILL link]
+- **Live app:** https://studyflowgit-7qknfdiszryc4rcjjw8ya2.streamlit.app/
+- **Demo reel:** https://drive.google.com/file/d/14i-Newnsk6OVFfegpspNiwRQwr__BSrZ/view?usp=drivesdk
 
 ## How it works
 

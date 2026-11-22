@@ -1,6 +1,6 @@
 <!-- Edit this file, then run:  python docs/build_report.py
      Everything inside {{...}} is filled automatically from /prompts and /test-data/outputs.
-     Search for [FILL] and replace every one before submitting. -->
+     Search for FILL markers and replace every one before submitting. -->
 
 <div class="cover" markdown="1">
 
@@ -27,9 +27,9 @@
 
 | Link | URL |
 |---|---|
-| Prototype | [FILL https://….streamlit.app] |
+| Prototype | https://studyflowgit-7qknfdiszryc4rcjjw8ya2.streamlit.app/ |
 | Repository | https://github.com/vanshgupta101106-droid/StudyFlow |
-| Reel ([FILL] seconds) | [FILL Drive / unlisted YouTube link] |
+| Reel | https://drive.google.com/file/d/14i-Newnsk6OVFfegpspNiwRQwr__BSrZ/view?usp=drivesdk |
 
 </div>
 
@@ -151,7 +151,8 @@ These were taken from the running app on 22 Nov 2026. The free daily quota of `g
 
 **Link:** https://github.com/vanshgupta101106-droid/StudyFlow
 
-[FILL: screenshot of the repository home page]
+![Repository](screenshots/repository.png)
+*Repository home page (public, 22 Nov 2026)*
 
 **What changed since Milestone 1:**
 - Built and deployed the StudyFlow Streamlit app with 8 modules (Section 3.1).
