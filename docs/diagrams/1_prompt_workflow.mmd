@@ -3,7 +3,7 @@ flowchart TD
     B -- errors --> X[Show errors<br/>no AI call]
     B -- ok / warnings --> C[Planning context<br/>calendar of dates + hours<br/>allowed subjects per day<br/>target hours per subject]
     C --> D[Fill prompt P1 template<br/>system rules + subjects table<br/>+ calendar table + 1 format example]
-    D --> E[Gemini 2.5 Flash<br/>temperature 0.3, JSON mode]
+    D --> E[Gemini 3.6 Flash<br/>temperature 0.3, JSON mode]
     E --> F{Valid JSON?}
     F -- no --> Y[Show raw output + error]
     F -- yes --> G[Constraint checker<br/>hours, exam dates, overlaps,<br/>revision per subject]

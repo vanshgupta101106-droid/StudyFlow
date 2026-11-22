@@ -17,13 +17,13 @@
 | **Project title** | Timetable and Study Plan Generator |
 | **Problem ID / source** | C20 – Problem Pool |
 | **Batch** | B13-24 |
-| **Faculty** | [FILL faculty name] |
+| **Faculty** | Dr. Indrajeet Gupta |
 
 | Member | Enrollment no. |
 |---|---|
 | Ronit Agrawal (Team Leader) | S24CSEU1323 |
-| Vansh Gupta | [FILL S24CSEU….] |
-| Mehul Choubey | [FILL S24CSEU….] |
+| Vansh Gupta | S24CSEU1338 |
+| Mehul Choubey | S24CSEU1324 |
 
 | Link | URL |
 |---|---|
@@ -50,7 +50,7 @@
 
 P2 is a separate prompt because it needs the previous plan and a change request as extra inputs.
 
-**Tool and model, and why.** We use **Gemini 2.5 Flash through the Gemini API (Google AI Studio key)**, called from a Streamlit web app. We chose it for four reasons:
+**Tool and model, and why.** We use **Gemini 3.6 Flash through the Gemini API (Google AI Studio key)**, called from a Streamlit web app. We chose it for four reasons:
 
 - It has a free API tier, which an evaluator-facing prototype needs.
 - Its native JSON response mode makes the output reliably machine-checkable.
@@ -59,7 +59,7 @@ P2 is a separate prompt because it needs the previous plan and a change request 
 
 **What changed since Milestone 1.** In Milestone 1 we defined the problem, the idea and three candidate AI tools (ChatGPT, Gemini, Claude). Since then we have:
 
-- selected one model (Gemini 2.5 Flash);
+- selected one model (Gemini 3.6 Flash);
 - designed the code + LLM task decomposition above;
 - written and tested three prompt versions;
 - built and deployed the working app with validation, an automatic constraint checker and regeneration;
@@ -88,7 +88,7 @@ The final solution uses **2 prompts**: P1 (generate) and P2 (regenerate).
 ## 3. Implementation
 
 ### 3.1 What is built
-StudyFlow is a Python web application built with Streamlit (`code/application/`), deployed on Streamlit Community Cloud. It calls Gemini 2.5 Flash through the official `google-genai` SDK. The API key is stored in Streamlit secrets and never in the repository. The web app and the test runner share the same pipeline, so the tests exercise exactly the code the user runs.
+StudyFlow is a Python web application built with Streamlit (`code/application/`), deployed on Streamlit Community Cloud. It calls Gemini 3.6 Flash through the official `google-genai` SDK. The API key is stored in Streamlit secrets and never in the repository. The web app and the test runner share the same pipeline, so the tests exercise exactly the code the user runs.
 
 | Module | What it does | Status | Notes |
 |---|---|---|---|
@@ -166,9 +166,9 @@ A valid input passes only if the output is valid JSON **and** the automatic cons
 
 | Member name | Enrollment no. | Role | Tasks done in Milestone 2 | Evidence | Contribution (%) |
 |---|---|---|---|---|---|
-| Ronit Agrawal | S24CSEU1323 | [FILL] | [FILL specific tasks] | [FILL file / commit / prompt ID / section] | [FILL] |
-| Vansh Gupta | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
-| Mehul Choubey | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| Ronit Agrawal | S24CSEU1323 | Team leader, prompt design | Wrote prompt P1 v1–v3 and P2; built the prompt builder and the shared pipeline; ran the prompt comparison; compiled this report | `prompts/v1–v3/`, `prompts/final/P1_generate.txt`, `P2_regenerate.txt`, `prompt_builder.py`, `pipeline.py`; Sections 2–3 | 35 |
+| Vansh Gupta | S24CSEU1338 | Backend logic and testing | Built input validation, the planning context (calendar + target hours) and the constraint checker; wrote the 12 test inputs, unit tests and experiment runner | `validation.py`, `planner.py`, `checker.py`, `tests/test_core.py`, `test-data/inputs/T01–T12`, `run_experiments.py`; Section 4 | 35 |
+| Mehul Choubey | S24CSEU1324 | Frontend, deployment and documentation | Built the Streamlit UI and Gemini client; deployed the app; drew the 4 diagrams; wrote the technical report; recorded the reel | `app.py`, `llm.py`, `docs/diagrams/`, `CodeHead_TechnicalReport.pdf`, reel; Sections 5–6 | 30 |
 | | | | | **Total** | **100** |
 
 All three members have read and agreed to this contribution table.

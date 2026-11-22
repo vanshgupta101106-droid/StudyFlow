@@ -3,7 +3,7 @@ flowchart TB
     IN --> p1[1. Validation<br/>errors stop here, warnings continue]
     p1 --> p2[2. Planning context<br/>calendar table + target hours table]
     p2 --> p3[3. Prompt P1 - or P2 when regenerating]
-    p3 --> p4[4. Gemini 2.5 Flash<br/>JSON mode, temperature 0.3]
+    p3 --> p4[4. Gemini 3.6 Flash<br/>JSON mode, temperature 0.3]
     p4 --> p5[5. JSON parse + constraint checker]
     p5 --> OUT["<b>OUTPUTS</b><br/>Day-wise timetable: start, end, subject, activity, topic<br/>Strategy summary + AI warnings<br/>Planned vs target hours per subject - chart<br/>Constraint check: pass or list of violations<br/>Study tips<br/>CSV and JSON download"]
     style IN fill:#e3f2fd,stroke:#1e88e5,text-align:left

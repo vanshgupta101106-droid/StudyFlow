@@ -22,6 +22,6 @@ All progress after Milestone 1. Dates are YYYY-MM-DD.
 - Report restructured to the 7 required sections and headings; module table uses the Working / Partly working / Not started statuses.
 
 ## [FILL date]
-- Ran `run_experiments.py` with gemini-2.5-flash: [FILL x/12 passed]. Saved outputs in `test-data/outputs/`.
+- Ran `run_experiments.py` with gemini-3.6-flash: [FILL x/12 passed]. Saved outputs in `test-data/outputs/`.
 - Deployed to Streamlit Community Cloud: [FILL link].
 - [FILL any prompt or code changes made after seeing the test results]

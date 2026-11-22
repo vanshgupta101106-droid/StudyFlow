@@ -74,6 +74,6 @@ This fills `docs/report_template.md` and `docs/technical_report_template.md` wit
 
 | Member | Role |
 |---|---|
-| Ronit Agrawal (leader) | [FILL] |
-| Vansh Gupta | [FILL] |
-| Mehul Choubey | [FILL] |
+| Ronit Agrawal (leader), S24CSEU1323 | Prompt design (P1, P2), prompt builder, pipeline, report |
+| Vansh Gupta, S24CSEU1338 | Validation, planner, constraint checker, tests |
+| Mehul Choubey, S24CSEU1324 | Streamlit UI, Gemini client, deployment, diagrams, technical report, reel |

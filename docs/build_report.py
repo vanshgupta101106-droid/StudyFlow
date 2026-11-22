@@ -91,7 +91,7 @@ def prompt_sheets() -> str:
 | Prompt ID and name | {pid} – {p.meta['name']} (file `prompts/{PROMPTS[pid]}`) |
 | Step in the workflow | {p.meta['step']} |
 | Purpose | {purpose} |
-| Tool and model | Gemini 2.5 Flash (`gemini-2.5-flash`) via the Gemini API, google-genai Python SDK |
+| Tool and model | Gemini 3.6 Flash (`gemini-3.6-flash`) via the Gemini API, google-genai Python SDK |
 | Settings | temperature {p.meta['temperature']}; response_mime_type application/json; max_output_tokens 32768; others default |
 | Number of examples included | {p.meta['examples']} |
 | Output format | JSON object: summary, warnings[], days[ {{date, sessions[ {{start, end, subject, activity, topic}} ]}} ], subject_totals[], tips[] |

@@ -49,7 +49,7 @@ Every number must match the PDF.
 | 6 Group (batch) | B13-24 |
 | 7 All enrollment numbers (one per line) | S24CSEU1323 / [FILL Vansh] / [FILL Mehul] |
 | 8 Project type (max 2) | [FILL: choose from the form's options, e.g. the web-app / LLM-application ones] |
-| 9 Main AI tool and model | Gemini 2.5 Flash via the Gemini API (Google AI Studio key), in a Streamlit web app |
+| 9 Main AI tool and model | Gemini 3.6 Flash via the Gemini API (Google AI Studio key), in a Streamlit web app |
 | 10 Number of prompts | **2** (prompt sheets P1 and P2 in Section 2.3) |
 | 11 Prototype link | [FILL streamlit.app link] |
 | 12 Repository link | [FILL github link] |

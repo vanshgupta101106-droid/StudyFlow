@@ -7,7 +7,7 @@ import re
 import time
 from pathlib import Path
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.6-flash"
 
 
 def get_api_key(secrets=None) -> str | None:

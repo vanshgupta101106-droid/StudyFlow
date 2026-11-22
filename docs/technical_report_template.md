@@ -16,7 +16,7 @@ The same `pipeline.py` is used by the web app and by the experiment runner (`cod
 
 **3. Tools and models.**
 
-- **Model and API:** Google Gemini `gemini-2.5-flash` via the `google-genai` SDK, in JSON response mode.
+- **Model and API:** Google Gemini `gemini-3.6-flash` via the `google-genai` SDK, in JSON response mode.
 - **Settings:** temperature 0.3 for the final prompts, with up to 3 retries on transient errors.
 - **App stack:** Python 3, Streamlit, pandas, and Mermaid for the diagrams.
 - **Secrets:** the API key is kept in Streamlit secrets and is never committed.

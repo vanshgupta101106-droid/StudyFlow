@@ -10,7 +10,7 @@ flowchart LR
         PL --> C[checker.py]
         S[(Streamlit secrets<br/>GEMINI_API_KEY)] -.-> L
     end
-    L <-->|google-genai SDK| G[Google Gemini API<br/>gemini-2.5-flash]
+    L <-->|google-genai SDK| G[Google Gemini API<br/>gemini-3.6-flash]
     subgraph OFF[Offline evaluation]
         E[run_experiments.py] --> PL
         E --> TD[(test-data<br/>inputs / outputs)]
